@@ -1,0 +1,59 @@
+/* CSS sencillo para diseño tipo 'App' */
+.container { max-width: 800px; margin: 40px auto; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.form-group { margin-bottom: 20px; }
+label { display: block; margin-bottom: 8px; font-weight: bold; }
+input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+.btn-submit { background-color: #00796b; color: white; padding: 15px; border: none; border-radius: 6px; width: 100%; cursor: pointer; font-size: 16px; }
+/* El estilo de los bloques de horario */
+.horarios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+/* Ocultamos el input de radio real */
+.horarios-grid input[type="radio"] {
+    display: none;
+}
+
+/* Diseñamos el 'label' para que parezca un botón clickeable */
+.hora-btn {
+    background-color: #f0f0f0;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: block;
+}
+
+/* Efecto hover y cuando está seleccionado (Estilo Cinépolis) */
+.hora-btn:hover {
+    background-color: #e0f2f1;
+    border-color: #009688;
+}
+
+.horarios-grid input[type="radio"]:checked + .hora-btn {
+    background-color: #00796b;
+    color: white;
+    border-color: #004d40;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+.container { max-width: 600px; margin: 40px auto; padding: 20px; font-family: sans-serif; }
+.form-group { margin-bottom: 20px; }
+label { display: block; margin-bottom: 8px; font-weight: bold; }
+input[type="date"], textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+
+/* Grid de Horarios Estilo Cinépolis */
+.horarios-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; margin-top: 10px; }
+.horarios-grid input[type="radio"] { display: none; } /* Ocultar el círculo feo */
+
+.hora-btn { background: #f5f5f5; border: 2px solid #ddd; padding: 10px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; display: block; transition: 0.2s; }
+.hora-btn:hover { background: #e0f2f1; border-color: #009688; }
+.horarios-grid input[type="radio"]:checked + .hora-btn { background: #00796b; color: white; border-color: #004d40; }
+
+.btn-submit { background: #00796b; color: white; padding: 15px; border: none; width: 100%; border-radius: 6px; cursor: pointer; font-size: 16px; margin-top: 20px; }

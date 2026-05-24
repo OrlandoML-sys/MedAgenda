@@ -1,0 +1,62 @@
+/* Colores estilo Doctoralia */
+/*LOGIN*/
+.bg-medagenda {
+    background-color: #007c70 !important;
+}
+
+.text-medagenda {
+    color: #007c70 !important;
+}
+
+.hero-section {
+    background-color: #007c70; color: white; padding: 100px 0 80px 0;
+}
+
+body {
+    padding-top: 60px; /* Espacio para el navbar fijo */
+}
+.phone-section {
+    border: none;
+    padding: 0;
+    margin-bottom: 20px;
+    font-family: sans-serif;
+}
+
+.label {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #333;
+}
+
+.hint {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 4px 0 12px 0;
+}
+
+.phone-input-container {
+    display: flex;
+    gap: 10px; /* Espacio entre el prefijo y el número */
+}
+
+.prefix-select {
+    flex: 0 0 100px; /* Ancho fijo para el prefijo */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.phone-field {
+    flex: 1; /* El campo de número ocupa el resto del espacio */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.phone-field:focus, .prefix-select:focus {
+    outline: none;
+    border-color: #007bff; /* Color de énfasis */
+    box-shadow: 0 0 5px rgba(0,123,255,0.2);
+}
