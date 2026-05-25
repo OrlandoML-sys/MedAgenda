@@ -1,6 +1,6 @@
 package modelo;
 
-import org.w3c.dom.Text;
+import java.lang.String;
 
 import java.io.Serializable;
 
@@ -8,13 +8,13 @@ public class Expediente implements Serializable {
     private static final long serialVersionUID = 1L;
     private int idExpediente;
     private int idCita;
-    private Text diagnostico;
-    private Text tratamiento;
+    private String diagnostico;
+    private String tratamiento;
     private String notasJSON;
 
     public Expediente(){}
 
-    public Expediente(int idExpediente, int idCita, Text diagnostico, Text tratamiento, String notasJSON) {
+    public Expediente(int idExpediente, int idCita, String diagnostico, String tratamiento, String notasJSON) {
         this.idExpediente = idExpediente;
         this.idCita = idCita;
         this.diagnostico = diagnostico;
@@ -38,19 +38,19 @@ public class Expediente implements Serializable {
         this.idCita = idCita;
     }
 
-    public Text getDiagnostico() {
+    public String getDiagnostico() {
         return diagnostico;
     }
 
-    public void setDiagnostico(Text diagnostico) {
+    public void setDiagnostico(String diagnostico) {
         this.diagnostico = diagnostico;
     }
 
-    public Text getTratamiento() {
+    public String getTratamiento() {
         return tratamiento;
     }
 
-    public void setTratamiento(Text tratamiento) {
+    public void setTratamiento(String tratamiento) {
         this.tratamiento = tratamiento;
     }
 

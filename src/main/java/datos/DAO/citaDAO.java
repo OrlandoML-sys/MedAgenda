@@ -143,4 +143,35 @@ public class citaDAO {
 
         return horariosDisponibles;
     }
+
+    public List<modelo.Cita> obtenerCitasPorDoctor(int idDoctor) {
+        List<modelo.Cita> lista = new ArrayList<>();
+        String sql = "SELECT c.*, p.nombre AS nombre_paciente FROM cita c " +
+                "JOIN doctor d ON c.iddoctor = d.iddoctor " +
+                "JOIN paciente p ON c.idpaciente = p.idpaciente " +
+                "WHERE d.idusuario = ? ORDER BY c.fechahora DESC";
+
+        try (java.sql.Connection conn = datos.conection.getConnection();
+             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, idDoctor);
+
+            try (java.sql.ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    modelo.Cita c = new modelo.Cita();
+                    c.setIdCita(rs.getInt("idcita"));
+                    c.setIdPaciente(rs.getInt("idpaciente"));
+                    c.setIdDoctor(rs.getInt("iddoctor"));
+                    c.setFechaHora(rs.getTimestamp("fechahora"));
+                    c.setMotivo(rs.getString("motivo"));
+                    c.setEstado(rs.getString("estado"));
+                    c.setNombrePaciente(rs.getString("nombre_paciente"));
+                    lista.add(c);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
 }

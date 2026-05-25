@@ -8,6 +8,7 @@ public class Cita implements Serializable {
     private int idCita;
     private int idPaciente;
     private int idDoctor;
+    private String nombrePaciente;
     private Timestamp fechaHora;
     private String motivo;
     private String estado;
@@ -47,9 +48,7 @@ public class Cita implements Serializable {
         this.idDoctor = idDoctor;
     }
 
-    public Timestamp getFechaHora() {
-        return fechaHora;
-    }
+    public Timestamp getFechaHora() {return fechaHora;}
 
     public void setFechaHora(Timestamp fechaHora) {
         this.fechaHora = fechaHora;
@@ -70,4 +69,8 @@ public class Cita implements Serializable {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+
+    public String getNombrePaciente() {return nombrePaciente;}
+
+    public void setNombrePaciente(String nombrePaciente) {this.nombrePaciente = nombrePaciente;}
 }

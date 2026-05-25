@@ -1,3 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="modelo.Cita" %>
+<%@ page import="datos.DAO.citaDAO" %>
 <%
     // Recuperamos el objeto de la sesión
     modelo.Usuario usuarioLogueado = (modelo.Usuario) session.getAttribute("usuarioLogueado");
@@ -7,9 +11,13 @@
         response.sendRedirect("index.jsp");
         return; // El return es vital para que la página deje de cargar inmediatamente
     }
+
+    // OBTENER LAS CITAS DEL DOCTOR
+    citaDAO daoCita = new citaDAO();
+    // Asegúrate de que el método getIdUsuario() coincida con tu modelo Usuario
+    List<Cita> misCitas = daoCita.obtenerCitasPorDoctor(usuarioLogueado.getIdUsuario());
 %>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -26,6 +34,7 @@
     <a href="#" class="menu-item">Pacientes</a>
     <a href="#" class="menu-item">Editar perfil</a>
     <a href="#" class="menu-item">Configurar horarios</a>
+    <!-- Dejé los espacios en blanco que tenías para mantener tu estructura -->
     <a href="#" class="menu-item"></a>
     <a href="#" class="menu-item"></a>
     <a href="#" class="menu-item"></a>
@@ -52,12 +61,22 @@
 </div>
 
 <div class="main-content">
+
+    <!-- ALERTA DE ÉXITO (Se muestra cuando vienes de guardar un expediente) -->
+    <% if("1".equals(request.getParameter("expedienteGuardado"))) { %>
+    <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+        <strong>¡Éxito!</strong> El expediente clínico se guardó correctamente.
+    </div>
+    <% } %>
+
     <div class="top-banner">
         <span>Convierte el interés de los pacientes en agendamientos</span>
         <button class="btn-outline">Descubrir planes</button>
     </div>
 
-    <h2>Hola, Orlando Madrigal Lagunes</h2>
+    <!-- SALUDO DINÁMICO -->
+    <h2>Hola, Dr(a). <%= usuarioLogueado.getUsername() != null ? usuarioLogueado.getUsername() : "Médico" %></h2>
+    <p style="color: red;">ID de Usuario en Sesión: <%= usuarioLogueado.getIdUsuario() %></p>
     <span class="subtitle">Algunas métricas y acciones recomendadas para ti</span>
 
     <div class="card-container">
@@ -85,6 +104,52 @@
             </div>
         </div>
     </div>
+
+    <!-- NUEVA SECCIÓN: AGENDA DE CITAS -->
+    <h3 style="margin-top: 40px; color: #333;">Mi Agenda</h3>
+    <div class="card" style="width: 100%; padding: 20px; overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+            <tr style="border-bottom: 2px solid #eee;">
+                <th style="padding: 12px 8px; color: #666;">Paciente</th>
+                <th style="padding: 12px 8px; color: #666;">Fecha y Hora</th>
+                <th style="padding: 12px 8px; color: #666;">Motivo</th>
+                <th style="padding: 12px 8px; color: #666;">Estado</th>
+                <th style="padding: 12px 8px; color: #666; text-align: center;">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% if (misCitas == null || misCitas.isEmpty()) { %>
+            <tr>
+                <td colspan="5" style="padding: 20px; text-align: center; color: #999;">No tienes citas agendadas por el momento.</td>
+            </tr>
+            <% } else {
+                for (Cita c : misCitas) { %>
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 12px 8px; font-weight: bold; color: #00796b;">
+                    <i class="fa-solid fa-user me-2"></i> <%= c.getNombrePaciente() != null ? c.getNombrePaciente().replace("(", "").replace(")", "").replace(",", " ") : "Desconocido" %>
+                </td>
+                <td style="padding: 12px 8px;"><%= c.getFechaHora() != null ? c.getFechaHora().toString().substring(0, 16) : "Sin asignar" %></td>
+                <td style="padding: 12px 8px;"><%= c.getMotivo() %></td>
+                <td style="padding: 12px 8px;">
+                            <span style="padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;
+                                <%= "COMPLETADA".equals(c.getEstado()) ? "background-color: #d4edda; color: #155724;" : "background-color: #fff3cd; color: #856404;" %>">
+                                <%= c.getEstado() %>
+                            </span>
+                </td>
+                <td style="padding: 12px 8px; text-align: center;">
+                    <a href="crearExpediente.jsp?idCita=<%= c.getIdCita() %>"
+                       style="background-color: #00796b; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px;">
+                        📝 Crear Expediente
+                    </a>
+                </td>
+            </tr>
+            <%  }
+            } %>
+            </tbody>
+        </table>
+    </div>
+
 </div>
 
 </body>
