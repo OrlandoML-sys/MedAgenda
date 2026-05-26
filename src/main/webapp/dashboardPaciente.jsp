@@ -7,6 +7,10 @@
         response.sendRedirect("index.jsp");
         return; // El return es vital para que la página deje de cargar inmediatamente
     }
+
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expires", 0);
 %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

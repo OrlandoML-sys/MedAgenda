@@ -12,10 +12,20 @@
         return; // El return es vital para que la página deje de cargar inmediatamente
     }
 
+
     // OBTENER LAS CITAS DEL DOCTOR
     citaDAO daoCita = new citaDAO();
     // Asegúrate de que el método getIdUsuario() coincida con tu modelo Usuario
     List<Cita> misCitas = daoCita.obtenerCitasPorDoctor(usuarioLogueado.getIdUsuario());
+
+    // NÚMEROS DINÁMICOS PARA LAS MÉTRICAS
+    int totalCitas = misCitas.size(); // Dato 100% real de tu BD
+    int vistasPerfil = (int) (Math.random() * 50) + 15; // Simulación: entre 15 y 65
+    int clicsContacto = (int) (Math.random() * 10) + 2;  // Simulación: entre 2 y 12
+
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expires", 0);
 %>
 
 <!DOCTYPE html>
@@ -29,12 +39,14 @@
 
 <div class="sidebar">
     <div class="logo-area">⚕️ MedAgenda</div>
-    <a href="#" class="menu-item active">Vista general</a>
-    <a href="#" class="menu-item">Mis Citas</a>
-    <a href="#" class="menu-item">Pacientes</a>
-    <a href="#" class="menu-item">Editar perfil</a>
-    <a href="#" class="menu-item">Configurar horarios</a>
-    <!-- Dejé los espacios en blanco que tenías para mantener tu estructura -->
+    <a href="dashboardDoctor.jsp" class="menu-item active">Vista general</a>
+
+    <a href="#seccion-agenda" class="menu-item">Mis Citas</a>
+
+    <a href="pacientes.jsp" class="menu-item">Pacientes</a>
+
+    <a href="#" onclick="alert('Módulo de edición de perfil en construcción.'); return false;" class="menu-item">Editar perfil</a>
+
     <a href="#" class="menu-item"></a>
     <a href="#" class="menu-item"></a>
     <a href="#" class="menu-item"></a>
@@ -57,7 +69,9 @@
     <a href="#" class="menu-item"></a>
     <a href="#" class="menu-item"></a>
     <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item">Mi cuenta</a>
+    <a href="#" class="menu-item"></a>
+
+    <a href="logoutServlet" class="menu-item text-danger fw-bold"><i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar sesión</a>
 </div>
 
 <div class="main-content">
@@ -92,21 +106,21 @@
             <h3>Interés del paciente <span style="font-size: 12px; font-weight: normal; color: #999; float: right;">Últimos 30 días</span></h3>
             <div class="metric-row">
                 <span>👁️ Vistas al perfil</span>
-                <span class="metric-value">0</span>
+                <span class="metric-value"><%= vistasPerfil %></span>
             </div>
             <div class="metric-row">
                 <span>📅 Intentos de cita</span>
-                <span class="metric-value">0</span>
+                <span class="metric-value"><%= totalCitas %></span>
             </div>
             <div class="metric-row">
                 <span>📞 Clics en contacto</span>
-                <span class="metric-value">0</span>
+                <span class="metric-value"><%= clicsContacto %></span>
             </div>
         </div>
     </div>
 
     <!-- NUEVA SECCIÓN: AGENDA DE CITAS -->
-    <h3 style="margin-top: 40px; color: #333;">Mi Agenda</h3>
+    <h3 id="seccion-agenda" tyle="margin-top: 40px; color: #333;">Mi Agenda</h3>
     <div class="card" style="width: 100%; padding: 20px; overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
@@ -139,9 +153,16 @@
                 </td>
                 <td style="padding: 12px 8px; text-align: center;">
                     <a href="crearExpediente.jsp?idCita=<%= c.getIdCita() %>"
-                       style="background-color: #00796b; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px;">
-                        📝 Crear Expediente
+                       style="background-color: #00796b; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px; margin-right: 5px;">
+                        📝 Expediente
                     </a>
+
+                    <% if("REALIZADA".equals(c.getEstado())) { %>
+                    <a href="registrarPago.jsp?idCita=<%= c.getIdCita() %>"
+                       style="background-color: #28a745; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px;">
+                        💰 Cobrar
+                    </a>
+                    <% } %>
                 </td>
             </tr>
             <%  }
@@ -151,6 +172,10 @@
     </div>
 
 </div>
-
+<% if("1".equals(request.getParameter("pagoExitoso"))) { %>
+<div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+    <strong>¡Pago registrado!</strong> La transacción se ha guardado correctamente.
+</div>
+<% } %>
 </body>
 </html>
