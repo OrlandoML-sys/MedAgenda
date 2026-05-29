@@ -31,7 +31,6 @@ input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ccc; bo
     display: block;
 }
 
-/* Efecto hover y cuando está seleccionado (Estilo Cinépolis) */
 .hora-btn:hover {
     background-color: #e0f2f1;
     border-color: #009688;
@@ -48,9 +47,8 @@ input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ccc; bo
 label { display: block; margin-bottom: 8px; font-weight: bold; }
 input[type="date"], textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
 
-/* Grid de Horarios Estilo Cinépolis */
 .horarios-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; margin-top: 10px; }
-.horarios-grid input[type="radio"] { display: none; } /* Ocultar el círculo feo */
+.horarios-grid input[type="radio"] { display: none; }
 
 .hora-btn { background: #f5f5f5; border: 2px solid #ddd; padding: 10px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; display: block; transition: 0.2s; }
 .hora-btn:hover { background: #e0f2f1; border-color: #009688; }

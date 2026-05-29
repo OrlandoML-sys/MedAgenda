@@ -31,7 +31,6 @@ public class citaServlet extends HttpServlet {
         String idDoctorStr = request.getParameter("idDoctor");
         String fechaStr = request.getParameter("fechaSeleccionada");
         String horaStr = request.getParameter("horaSeleccionada");
-        // Los unes usando la 'T' para que pase al formateador estándar
         LocalDateTime ldt = LocalDateTime.parse(fechaStr + "T" + horaStr);
         Timestamp timestampFinal = Timestamp.valueOf(ldt);
         String motivo = request.getParameter("motivo");

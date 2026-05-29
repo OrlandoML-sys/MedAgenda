@@ -7,6 +7,7 @@ public class Doctor implements Serializable {
     private int idDoctor;
     private int idUsuario;
     private int idEspecialidad;
+    private String nombreEspecialidad;
     private String nombre;
     private String paterno;
     private String materno;
@@ -15,10 +16,11 @@ public class Doctor implements Serializable {
 
     public Doctor(){}
 
-    public Doctor(int idDoctor, int idUsuario, int idEspecialidad, String nombre, String paterno, String materno, String direccion, String cedula) {
+    public Doctor(int idDoctor, int idUsuario, int idEspecialidad, String nombreEspecialidad, String nombre, String paterno, String materno, String direccion, String cedula) {
         this.idDoctor = idDoctor;
         this.idUsuario = idUsuario;
         this.idEspecialidad = idEspecialidad;
+        this.nombreEspecialidad = nombreEspecialidad;
         this.nombre = nombre;
         this.paterno = paterno;
         this.materno = materno;
@@ -85,4 +87,8 @@ public class Doctor implements Serializable {
     public void setCedula(String cedula) {
         this.cedula = cedula;
     }
+
+    public String getNombreEspecialidad() {return nombreEspecialidad;}
+
+    public void setNombreEspecialidad(String nombreEspecialidad) {this.nombreEspecialidad = nombreEspecialidad;}
 }

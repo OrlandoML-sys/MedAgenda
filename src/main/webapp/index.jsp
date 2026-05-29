@@ -51,7 +51,6 @@
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block text-center">
-                <!-- Aquí podrías poner una ilustración en el futuro -->
                 <img src="https://via.placeholder.com/500x300/005a52/ffffff?text=Ilustracion+Medicos" alt="Doctores" class="img-fluid rounded">
             </div>
         </div>
@@ -78,10 +77,6 @@
         </div>
     </div>
 </section>
-
-<!-- ============================================== -->
-<!-- MODALES Y TOASTS A CONTINUACIÓN -->
-<!-- ============================================== -->
 
 <div class="modal fade" id="modalLogin" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
@@ -157,17 +152,14 @@
                         <p class="hint">Necesitamos tu teléfono para configurar tu cuenta. No se mostrará en tu perfil.</p>
 
                         <div class="phone-input-container">
-                            <!-- Selector de Prefijo -->
                             <select name="countryCode" class="prefix-select">
                                 <option value="+52" selected>🇲🇽 +52</option>
                                 <option value="+1">🇺🇸 +1</option>
                                 <option value="+34">🇪🇸 +34</option>
                                 <option value="+54">🇦🇷 +54</option>
                                 <option value="+57">🇨🇴 +57</option>
-                                <!-- Agrega más según necesites -->
                             </select>
 
-                            <!-- Campo del Número -->
                             <input type="tel"
                                    name="phone"
                                    id="phone"
@@ -221,7 +213,6 @@
 
 <!-- CONTENEDOR DEL TOAST DE FEEDBACK -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <!-- El Toast solo se arma si la URL trae el parámetro registroExitoso=1 -->
     <% if("1".equals(request.getParameter("registroExitoso"))) { %>
         <div id="toastExito" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">

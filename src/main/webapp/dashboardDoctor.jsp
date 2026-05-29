@@ -9,19 +9,18 @@
     // Si no hay sesión iniciada, o si el rol NO es DOCTOR, lo pateamos de vuelta al login
     if (usuarioLogueado == null || !"DOCTOR".equals(usuarioLogueado.getRol())) {
         response.sendRedirect("index.jsp");
-        return; // El return es vital para que la página deje de cargar inmediatamente
+        return;
     }
 
 
     // OBTENER LAS CITAS DEL DOCTOR
     citaDAO daoCita = new citaDAO();
-    // Asegúrate de que el método getIdUsuario() coincida con tu modelo Usuario
     List<Cita> misCitas = daoCita.obtenerCitasPorDoctor(usuarioLogueado.getIdUsuario());
 
     // NÚMEROS DINÁMICOS PARA LAS MÉTRICAS
-    int totalCitas = misCitas.size(); // Dato 100% real de tu BD
-    int vistasPerfil = (int) (Math.random() * 50) + 15; // Simulación: entre 15 y 65
-    int clicsContacto = (int) (Math.random() * 10) + 2;  // Simulación: entre 2 y 12
+    int totalCitas = misCitas.size();
+    int vistasPerfil = (int) (Math.random() * 50) + 15;
+    int clicsContacto = (int) (Math.random() * 10) + 2;
 
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");

@@ -119,7 +119,6 @@ public class citaDAO {
 
             try (PreparedStatement psCitas = conn.prepareStatement(sqlCitas)) {
                 psCitas.setString(1, String.valueOf(idDoctor));
-                // Esto buscará cualquier registro que empiece con "2026-05-28" sin importar la hora
                 psCitas.setString(2, fechaConsulta.toString() + "%");
                 System.out.println("DAO buscando citas para Doctor: " + idDoctor + " en fecha: " + fechaConsulta);
 

@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class expedienteDAO {
     private static final String SQL_INSERT = "INSERT INTO expediente (idCita, diagnostico, tratamiento, notasJSON) VALUES (?, ?, ?, ?::jsonb)";
@@ -54,5 +56,25 @@ public class expedienteDAO {
             ex.printStackTrace(System.out);
         }
         return exp;
+    }
+
+    public List<modelo.Expediente> obtenerExpedientesPorPaciente(int idPaciente) {
+        List<modelo.Expediente> lista = new ArrayList<>();
+        String sql = "SELECT * FROM expediente WHERE idcita IN (SELECT idcita FROM cita WHERE idpaciente = ?)";
+
+        try (Connection conn = conection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, idPaciente);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Expediente exp = new Expediente();
+                exp.setIdExpediente(rs.getInt("idExpediente"));
+                exp.setIdCita(rs.getInt("idCita"));
+                exp.setDiagnostico(rs.getString("diagnostico"));
+                exp.setTratamiento(rs.getString("tratamiento"));
+                exp.setNotasJSON(rs.getString("notasJSON"));            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return lista;
     }
 }
