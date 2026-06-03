@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List" %>
 <%@ page import="modelo.Cita" %>
 <%@ page import="datos.DAO.citaDAO" %>
@@ -25,6 +25,23 @@
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
     response.setDateHeader("Expires", 0);
+
+    String nombreDoctor = "Doctor Registrado";
+    try (java.sql.Connection conn = datos.conection.getConnection();
+         java.sql.PreparedStatement ps = conn.prepareStatement("SELECT nombre FROM doctor WHERE idusuario = ?")) {
+
+        ps.setInt(1, usuarioLogueado.getIdUsuario());
+        try (java.sql.ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                String nomRaw = rs.getString("nombre");
+                if (nomRaw != null) {
+                    nombreDoctor = nomRaw.replaceAll("[\"(),]", " ").trim();
+                }
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 %>
 
 <!DOCTYPE html>
@@ -44,7 +61,8 @@
 
     <a href="pacientes.jsp" class="menu-item">Pacientes</a>
 
-    <a href="#" onclick="alert('Módulo de edición de perfil en construcción.'); return false;" class="menu-item">Editar perfil</a>
+    <a href="#" onclick="alert('Módulo de edición de perfil en construcción.'); return false;" class="menu-item">Editar
+        perfil</a>
 
     <a href="#" class="menu-item"></a>
     <a href="#" class="menu-item"></a>
@@ -70,15 +88,21 @@
     <a href="#" class="menu-item"></a>
     <a href="#" class="menu-item"></a>
 
-    <a href="logoutServlet" class="menu-item text-danger fw-bold"><i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar sesión</a>
+    <a href="logoutServlet" class="menu-item text-danger fw-bold"><i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar
+        sesión</a>
 </div>
 
 <div class="main-content">
 
-    <!-- ALERTA DE ÉXITO (Se muestra cuando vienes de guardar un expediente) -->
-    <% if("1".equals(request.getParameter("expedienteGuardado"))) { %>
-    <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+    <% if ("1".equals(request.getParameter("expedienteGuardado"))) { %>
+    <div class="alerta-temporal" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #c3e6cb; transition: all 0.5s ease-in-out;">
         <strong>¡Éxito!</strong> El expediente clínico se guardó correctamente.
+    </div>
+    <% } %>
+
+    <% if ("1".equals(request.getParameter("pagoExitoso"))) { %>
+    <div class="alerta-temporal" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #c3e6cb; transition: all 0.5s ease-in-out;">
+        <strong>¡Pago registrado!</strong> La transacción se ha guardado correctamente.
     </div>
     <% } %>
 
@@ -88,8 +112,10 @@
     </div>
 
     <!-- SALUDO DINÁMICO -->
-    <h2>Hola, Dr(a). <%= usuarioLogueado.getUsername() != null ? usuarioLogueado.getUsername() : "Médico" %></h2>
-    <p style="color: red;">ID de Usuario en Sesión: <%= usuarioLogueado.getIdUsuario() %></p>
+    <h2>Hola, Dr(a). <%= nombreDoctor %>
+    </h2>
+    <p style="color: red;">ID de Usuario en Sesión: <%= usuarioLogueado.getIdUsuario() %>
+    </p>
     <span class="subtitle">Algunas métricas y acciones recomendadas para ti</span>
 
     <div class="card-container">
@@ -97,12 +123,15 @@
         <div class="card highlight">
             <h3>Completar perfil</h3>
             <p>Mejora tu posición en MedAgenda agregando más información a tu perfil público.</p>
-            <button style="background: white; border: 1px solid #00796b; color: #00796b; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Agregar información</button>
+            <button style="background: white; border: 1px solid #00796b; color: #00796b; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+                Agregar información
+            </button>
         </div>
 
         <!-- Tarjeta 2 -->
         <div class="card">
-            <h3>Interés del paciente <span style="font-size: 12px; font-weight: normal; color: #999; float: right;">Últimos 30 días</span></h3>
+            <h3>Interés del paciente <span style="font-size: 12px; font-weight: normal; color: #999; float: right;">Últimos 30 días</span>
+            </h3>
             <div class="metric-row">
                 <span>👁️ Vistas al perfil</span>
                 <span class="metric-value"><%= vistasPerfil %></span>
@@ -134,7 +163,9 @@
             <tbody>
             <% if (misCitas == null || misCitas.isEmpty()) { %>
             <tr>
-                <td colspan="5" style="padding: 20px; text-align: center; color: #999;">No tienes citas agendadas por el momento.</td>
+                <td colspan="5" style="padding: 20px; text-align: center; color: #999;">No tienes citas agendadas por el
+                    momento.
+                </td>
             </tr>
             <% } else {
                 for (Cita c : misCitas) { %>
@@ -142,13 +173,23 @@
                 <td style="padding: 12px 8px; font-weight: bold; color: #00796b;">
                     <i class="fa-solid fa-user me-2"></i> <%= c.getNombrePaciente() != null ? c.getNombrePaciente().replace("(", "").replace(")", "").replace(",", " ") : "Desconocido" %>
                 </td>
-                <td style="padding: 12px 8px;"><%= c.getFechaHora() != null ? c.getFechaHora().toString().substring(0, 16) : "Sin asignar" %></td>
-                <td style="padding: 12px 8px;"><%= c.getMotivo() %></td>
+                <td style="padding: 12px 8px;"><%= c.getFechaHora() != null ? c.getFechaHora().toString().substring(0, 16) : "Sin asignar" %>
+                </td>
+                <td style="padding: 12px 8px;"><%= c.getMotivo() %>
+                </td>
                 <td style="padding: 12px 8px;">
-                            <span style="padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;
-                                <%= "COMPLETADA".equals(c.getEstado()) ? "background-color: #d4edda; color: #155724;" : "background-color: #fff3cd; color: #856404;" %>">
-                                <%= c.getEstado() %>
-                            </span>
+                    <%
+                        // Evaluamos dinámicamente el color según el estado real de la DB
+                        String estiloBadge = "background-color: #fff3cd; color: #856404;"; // Amarillo por defecto (PENDIENTE / REALIZADA)
+                        if ("PAGADA".equals(c.getEstado())) {
+                            estiloBadge = "background-color: #d4edda; color: #155724;"; // Verde éxito
+                        } else if ("CANCELADA".equals(c.getEstado())) {
+                            estiloBadge = "background-color: #f8d7da; color: #721c24;"; // Rojo peligro
+                        }
+                    %>
+                    <span style="padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; <%= estiloBadge %>">
+        <%= c.getEstado() %>
+    </span>
                 </td>
                 <td style="padding: 12px 8px; text-align: center;">
                     <a href="crearExpediente.jsp?idCita=<%= c.getIdCita() %>"
@@ -156,7 +197,7 @@
                         📝 Expediente
                     </a>
 
-                    <% if("REALIZADA".equals(c.getEstado())) { %>
+                    <% if ("REALIZADA".equals(c.getEstado())) { %>
                     <a href="registrarPago.jsp?idCita=<%= c.getIdCita() %>"
                        style="background-color: #28a745; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px;">
                         💰 Cobrar
@@ -164,17 +205,36 @@
                     <% } %>
                 </td>
             </tr>
-            <%  }
+            <% }
             } %>
             </tbody>
         </table>
     </div>
 
 </div>
-<% if("1".equals(request.getParameter("pagoExitoso"))) { %>
-<div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
-    <strong>¡Pago registrado!</strong> La transacción se ha guardado correctamente.
-</div>
-<% } %>
+<script>
+    // Cuando la página termine de cargar por completo...
+    window.addEventListener('DOMContentLoaded', () => {
+        const alertas = document.querySelectorAll('.alerta-temporal');
+
+        if (alertas.length > 0) {
+            setTimeout(() => {
+                alertas.forEach(alerta => {
+                    alerta.style.opacity = '0';
+                    alerta.style.transform = 'translateY(-10px)';
+
+                    setTimeout(() => {
+                        alerta.style.display = 'none';
+                    }, 500);
+                });
+            }, 4000);
+
+            if (window.history.replaceState) {
+                const urlLimpia = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({ path: urlLimpia }, '', urlLimpia);
+            }
+        }
+    });
+</script>
 </body>
 </html>

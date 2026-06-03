@@ -14,7 +14,7 @@
                     <h4 class="mb-0">Registrar Pago de Consulta</h4>
                 </div>
                 <div class="card-body p-4">
-                    <form action="PagoServlet" method="POST">
+                    <form action="pagoServlet" method="POST">
                         <input type="hidden" name="idCita" value="<%= request.getParameter("idCita") %>">
 
                         <div class="mb-3">

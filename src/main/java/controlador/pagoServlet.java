@@ -30,8 +30,7 @@ public class pagoServlet extends HttpServlet{
         boolean pagado = pDAo.registrarPago(pago);
 
         if (pagado) {
-            // Actualizar estado de la cita a 'COMPLETADA'
-            String sqlUpdate = "UPDATE cita SET estado = 'COMPLETADA' WHERE idcita = ?";
+            String sqlUpdate = "UPDATE cita SET estado = 'PAGADA' WHERE idcita = ?";
             try (Connection conn = conection.getConnection();
                  PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
                 ps.setInt(1, idCita);

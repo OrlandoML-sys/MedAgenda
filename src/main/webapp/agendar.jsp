@@ -1,9 +1,19 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<% if (request.getAttribute("error") != null) { %>
-<div style="color: red; padding: 10px; background: #ffebee; border-radius: 5px; max-width: 600px; margin: 10px auto;">
-    <%= request.getAttribute("error") %>
-</div>
-<% } %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+    // 1. Validar que haya un paciente en sesión
+    modelo.Usuario usuarioLogueado = (modelo.Usuario) session.getAttribute("usuarioLogueado");
+    if (usuarioLogueado == null || !"PACIENTE".equals(usuarioLogueado.getRol())) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+
+    // 2. Atrapar el ID del doctor dinámicamente desde la URL
+    String idDoctorStr = request.getParameter("idDoctor");
+    if(idDoctorStr == null || idDoctorStr.isEmpty()){
+        response.sendRedirect("dashboardPaciente.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,9 +25,14 @@
 <div class="container">
     <h2>Agendar Cita</h2>
 
+    <% if (request.getParameter("error") != null) { %>
+    <div style="color: red; padding: 10px; background: #ffebee; border-radius: 5px; margin-bottom: 15px;">
+        Hubo un problema al agendar. El horario podría estar ocupado.
+    </div>
+    <% } %>
+
     <form action="CitaServlet" method="POST">
-        <!-- El valor se toma dinámicamente del parámetro de la URL -->
-        <input type="hidden" id="idDoctor" name="idDoctor" value="1">
+        <input type="hidden" id="idDoctor" name="idDoctor" value="<%= idDoctorStr %>">
 
         <div class="form-group">
             <label for="fecha">1. Selecciona el día de tu consulta:</label>
@@ -46,47 +61,51 @@
         const seccionHorarios = document.getElementById('seccionHorarios');
         const contenedorBotones = document.getElementById('contenedorBotones');
 
-        console.log("Depurando valores:", { idDoctor, fechaSeleccionada }); // Mira esto en la consola F12
+        // PUNTO DE CONTROL 1: Consola del navegador
+        console.log("1. Detecté cambio de fecha:", fechaSeleccionada);
+        console.log("2. ID Doctor:", idDoctor);
 
         if (!fechaSeleccionada) {
             seccionHorarios.style.display = 'none';
             return;
         }
 
-        // Petición asíncrona directa al controlador
-        fetch(`HorariosServlet?idDoctor=${idDoctor}&fecha=${fechaSeleccionada}`)
+        const urlFetch = "${pageContext.request.contextPath}/HorariosServlet?idDoctor=" + idDoctor + "&fecha=" + fechaSeleccionada;
+        console.log("3. URL corregida y blindada:", urlFetch);
+
+        fetch(urlFetch)
             .then(response => {
+                console.log("4. Respuesta HTTP recibida:", response.status);
                 if (!response.ok) {
                     throw new Error('La respuesta del servidor no fue correcta');
                 }
                 return response.json();
             })
             .then(horarios => {
+                console.log("5. Datos JSON recibidos del servidor:", horarios);
                 contenedorBotones.innerHTML = '';
 
-                // Si el arreglo viene vacío, significa que el doctor no labora o no tiene disponibilidad
                 if (horarios.length === 0) {
                     contenedorBotones.innerHTML = '<p style="color: #666; grid-column: 1/-1; font-style: italic;">No hay horarios disponibles para este día. Intenta con otra fecha.</p>';
                 } else {
-                    // Mapeamos los horarios reales traídos desde PostgreSQL
                     horarios.forEach(hora => {
-                        // Limpieza dinámica de los segundos (:00) si es que vienen incluidos en la cadena
                         const horaLimpia = hora.length > 5 ? hora.slice(0, -3) : hora;
 
+                        console.log("Renderizando botón para la hora:", horaLimpia);
+
                         const label = document.createElement('label');
-                        label.innerHTML = `
-                            <input type="radio" name="horaSeleccionada" value="${horaLimpia}" required>
-                            <span class="hora-btn">${horaLimpia}</span>
-                        `;
+
+                        label.innerHTML =
+                            '<input type="radio" name="horaSeleccionada" value="' + horaLimpia + '" required>' +
+                            '<span class="hora-btn">' + horaLimpia + '</span>';
+
                         contenedorBotones.appendChild(label);
                     });
                 }
-
-                // Desplegamos la sección de manera interactiva
                 seccionHorarios.style.display = 'block';
             })
             .catch(error => {
-                console.error('Error al recuperar los horarios:', error);
+                console.error('!!! ERROR EN EL FETCH:', error);
             });
     });
 </script>

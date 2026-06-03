@@ -17,7 +17,7 @@ public class citaDAO {
 
     // Método escudo: Devuelve TRUE si el horario está LIBRE, FALSE si está OCUPADO
     public boolean verificarDisponibilidad(int idDoctor, Timestamp fechaHora) {
-        String sql = "SELECT COUNT(*) FROM cita WHERE id_doctor = ? AND fechaHora = ? AND estado != 'CANCELADA'";
+        String sql = "SELECT COUNT(*) FROM cita WHERE iddoctor = ? AND fechahora = ? AND estado != 'CANCELADA'";
 
         try (Connection conn = conection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -40,7 +40,6 @@ public class citaDAO {
 
     // Método para registrar la cita
     public boolean agendarCita(Cita nuevaCita) {
-        // 1. ANTES de hacer el INSERT, verificamos la regla de negocio
         boolean estaLibre = verificarDisponibilidad(
                 nuevaCita.getIdDoctor(),
                 nuevaCita.getFechaHora()
@@ -48,11 +47,11 @@ public class citaDAO {
 
         if (!estaLibre) {
             System.out.println("No se puede agendar: El horario ya está ocupado.");
-            return false; // Bloqueamos la inserción y devolvemos falso
+            return false;
         }
 
         // 2. Si pasó el filtro, procedemos con el INSERT
-        String sql = "INSERT INTO cita (id_paciente, id_doctor, fechaHora, motivo, estado) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO cita (idpaciente, iddoctor, fechahora, motivo, estado) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = conection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -77,69 +76,47 @@ public class citaDAO {
         List<LocalTime> horariosDisponibles = new ArrayList<>();
         int diaSemanaJava = fechaConsulta.getDayOfWeek().getValue();
 
-        LocalTime entrada = null;
-        LocalTime salida = null;
+        System.out.println("--- DEPURANDO: Doctor " + idDoctor + " Fecha " + fechaConsulta + " DíaSemana " + diaSemanaJava + " ---");
 
-        // 1. Consultar el horario forzando absolutamente todo a texto (VARCHAR)
-        String sqlHorario = "SELECT CAST(horaentrada AS VARCHAR) as he, CAST(horasalida AS VARCHAR) as hs " +
-                "FROM horariolaboral " +
-                "WHERE CAST(iddoctor AS VARCHAR) = ? AND CAST(diasemana AS VARCHAR) = ?";
+        try (Connection conn = conection.getConnection()) {
+            String sqlHorario = "SELECT horaentrada, horasalida FROM horariolaboral WHERE iddoctor = ? AND diasemana::integer = ?";
+            try (PreparedStatement ps = conn.prepareStatement(sqlHorario)) {
+                ps.setInt(1, idDoctor);
+                ps.setInt(2, diaSemanaJava);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        LocalTime entrada = rs.getTime("horaentrada").toLocalTime();
+                        LocalTime salida = rs.getTime("horasalida").toLocalTime();
+                        System.out.println("Horario laboral hallado: " + entrada + " a " + salida);
 
-        try (Connection conn = conection.getConnection();
-             PreparedStatement psHorario = conn.prepareStatement(sqlHorario)) {
-
-            // Enviamos los parámetros como Strings
-            psHorario.setString(1, String.valueOf(idDoctor));
-            psHorario.setString(2, String.valueOf(diaSemanaJava));
-
-            try (ResultSet rs = psHorario.executeQuery()) {
-                if (rs.next()) {
-                    entrada = LocalTime.parse(rs.getString("he"));
-                    salida = LocalTime.parse(rs.getString("hs"));
-                }
-            }
-
-            if (entrada == null || salida == null) {
-                return horariosDisponibles;
-            }
-
-            // Generamos los bloques de 1 hora
-            LocalTime horaActual = entrada;
-            while (horaActual.isBefore(salida)) {
-                horariosDisponibles.add(horaActual);
-                horaActual = horaActual.plusHours(1);
-            }
-
-            // 2. Consultar citas ocupadas usando LIKE para ignorar problemas de TIMESTAMP
-            String sqlCitas = "SELECT CAST(fechahora AS VARCHAR) as hora_ocupada " +
-                    "FROM cita " +
-                    "WHERE CAST(iddoctor AS VARCHAR) = ? AND CAST(fechahora AS VARCHAR) LIKE ? AND estado != 'CANCELADA'";
-
-            List<LocalTime> horariosOcupados = new ArrayList<>();
-
-            try (PreparedStatement psCitas = conn.prepareStatement(sqlCitas)) {
-                psCitas.setString(1, String.valueOf(idDoctor));
-                psCitas.setString(2, fechaConsulta.toString() + "%");
-                System.out.println("DAO buscando citas para Doctor: " + idDoctor + " en fecha: " + fechaConsulta);
-
-                try (ResultSet rsCitas = psCitas.executeQuery()) {
-                    while (rsCitas.next()) {
-                        String fechahoraCompleta = rsCitas.getString("hora_ocupada"); // Ej. "2026-05-28 11:00:00"
-                        if (fechahoraCompleta != null && fechahoraCompleta.contains(" ")) {
-                            String soloHora = fechahoraCompleta.split(" ")[1]; // Extraemos solo el "11:00:00"
-                            horariosOcupados.add(LocalTime.parse(soloHora));
+                        LocalTime horaActual = entrada;
+                        while (horaActual.isBefore(salida)) {
+                            horariosDisponibles.add(horaActual);
+                            horaActual = horaActual.plusHours(1);
                         }
+                    } else {
+                        System.out.println("¡ALERTA! No se encontró horario laboral para este día.");
                     }
                 }
             }
 
-            // 3. Restar horarios y devolver
-            horariosDisponibles.removeAll(horariosOcupados);
-
+            // 2. Verificar citas ocupadas
+            String sqlCitas = "SELECT fechahora FROM cita WHERE iddoctor = ? AND DATE(fechahora) = ? AND estado != 'CANCELADA'";
+            try (PreparedStatement psCitas = conn.prepareStatement(sqlCitas)) {
+                psCitas.setInt(1, idDoctor);
+                psCitas.setDate(2, java.sql.Date.valueOf(fechaConsulta));
+                try (ResultSet rsCitas = psCitas.executeQuery()) {
+                    while (rsCitas.next()) {
+                        LocalTime horaOcupada = rsCitas.getTimestamp("fechahora").toLocalDateTime().toLocalTime();
+                        System.out.println("Cita encontrada ocupada a las: " + horaOcupada);
+                        horariosDisponibles.remove(horaOcupada);
+                    }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        System.out.println("Horarios finales enviados al JSON: " + horariosDisponibles);
         return horariosDisponibles;
     }
 

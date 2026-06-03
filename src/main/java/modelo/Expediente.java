@@ -3,6 +3,7 @@ package modelo;
 import java.lang.String;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 public class Expediente implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -11,6 +12,9 @@ public class Expediente implements Serializable {
     private String diagnostico;
     private String tratamiento;
     private String notasJSON;
+    private String nombreDoctor;
+    private java.sql.Timestamp fechaCita;
+
 
     public Expediente(){}
 
@@ -61,4 +65,12 @@ public class Expediente implements Serializable {
     public void setNotasJSON(String notasJSON) {
         this.notasJSON = notasJSON;
     }
+
+    public String getNombreDoctor() {return nombreDoctor;}
+
+    public void setNombreDoctor(String nombreDoctor) {this.nombreDoctor = nombreDoctor;}
+
+    public Timestamp getFechaCita() {return fechaCita;}
+
+    public void setFechaCita(Timestamp fechaCita) {this.fechaCita = fechaCita;}
 }

@@ -50,15 +50,14 @@ public class citaServlet extends HttpServlet {
 
             if (registrada) {
                 request.setAttribute("mensaje", "¡Cita agendada con éxito!");
-                request.getRequestDispatcher("dashboard_paciente.jsp").forward(request, response);
+                response.sendRedirect("dashboardPaciente.jsp?citaAgendada=1");
             } else {
                 request.setAttribute("error", "El horario ya está ocupado. Intenta con otro.");
-                request.getRequestDispatcher("agendar.jsp").forward(request, response);
+                response.sendRedirect("agendar.jsp?idDoctor=" + idDoctorStr + "&error=1");
             }
-
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("agendar.jsp?error=formatoInvalido");
+            response.sendRedirect("agendar.jsp?idDoctor=" + idDoctorStr + "&error=formatoInvalido");
         }
     }
 }

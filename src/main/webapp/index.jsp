@@ -212,32 +212,49 @@
 </div>
 
 <!-- CONTENEDOR DEL TOAST DE FEEDBACK -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 2000;">
     <% if("1".equals(request.getParameter("registroExitoso"))) { %>
-        <div id="toastExito" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    ¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
+    <div id="toastExito" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">¡Cuenta creada exitosamente! Revisa tu correo.</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
+    </div>
     <% } %>
 
     <% if("1".equals(request.getParameter("errorRegistro"))) { %>
-            <div id="toastError" class="toast align-items-center text-bg-danger border-0" role="alert">
-                <div class="d-flex">
-                    <div class="toast-body">
-                        Hubo un problema técnico al crear tu cuenta. Por favor, revisa los datos e intenta de nuevo.
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
+    <div id="toastError" class="toast align-items-center text-bg-danger border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body">Hubo un problema técnico al crear tu cuenta. Intenta de nuevo.</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+    <% } %>
+
+    <% if("1".equals(request.getParameter("errorCedula"))) { %>
+    <div id="toastCedula" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="6000">
+        <div class="d-flex">
+            <div class="toast-body fw-bold">
+                🚫 Registro Denegado: La Cédula Profesional ingresada no es válida o no existe en el Registro Nacional de Profesionistas (SEP).
             </div>
-        <% } %>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+    <% } %>
+
+    <% if("1".equals(request.getParameter("errorIdentidad"))) { %>
+    <div id="toastIdentidad" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="7000">
+        <div class="d-flex">
+            <div class="toast-body fw-bold">
+                🚨 Protección de Identidad: La Cédula Profesional ingresada es válida, pero NO coincide con tu nombre y apellidos. El registro ha sido bloqueado.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+    <% } %>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
     // Pequeño script para mostrar/ocultar campos según el tipo de usuario
     function toggleCampos() {
@@ -265,9 +282,7 @@
             inputFecNam.required = true;
         }
     }
-</script>
 
-<script>
     function togglePassword(inputId, iconId) {
         const input = document.getElementById(inputId);
         const icon = document.getElementById(iconId);
@@ -279,11 +294,7 @@
             icon.classList.replace("fa-eye-slash", "fa-eye");
         }
     }
-</script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
     // 1. Script para las validaciones de Bootstrap
     (() => {
         'use strict'
@@ -299,15 +310,44 @@
         })
     })()
 
-    // 2. Script para mostrar el Toast automáticamente si existe
+    // 2. Script Inteligente para disparar los Toasts y reabrir modales si hay error
     window.onload = (event) => {
-        const toastElement = document.getElementById('toastExito');
-        if (toastElement) {
-            const toast = new bootstrap.Toast(toastElement);
-            toast.show();
+        // Toast de Éxito
+        const toastExito = document.getElementById('toastExito');
+        if (toastExito) { new bootstrap.Toast(toastExito).show(); }
+
+        // Toast Error Técnico
+        const toastError = document.getElementById('toastError');
+        if (toastError) { new bootstrap.Toast(toastError).show(); }
+
+        // Toast de Seguridad (Cédula Falsa)
+        const toastCedula = document.getElementById('toastCedula');
+        if (toastCedula) {
+            new bootstrap.Toast(toastCedula).show();
+
+            // Si hubo error de cédula, le reabrimos el modal en automático para que vea el fallo
+            const modalRegistro = new bootstrap.Modal(document.getElementById('modalRegistro'));
+            modalRegistro.show();
+            document.getElementById('selectTipo').value = 'DOCTOR';
+            toggleCampos(); // Forzamos mostrar los campos de doctor
+        }
+
+        // Toast de Seguridad (Usurpación de Identidad)
+        const toastIdentidad = document.getElementById('toastIdentidad');
+        if (toastIdentidad) {
+            new bootstrap.Toast(toastIdentidad).show();
+
+            const modalRegistro = new bootstrap.Modal(document.getElementById('modalRegistro'));
+            modalRegistro.show();
+            document.getElementById('selectTipo').value = 'DOCTOR';
+            toggleCampos();
+        }
+
+        if (window.history.replaceState) {
+            const urlLimpia = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.replaceState({ path: urlLimpia }, '', urlLimpia);
         }
     };
 </script>
-
 </body>
 </html>

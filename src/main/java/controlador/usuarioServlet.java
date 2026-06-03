@@ -83,6 +83,42 @@ public class usuarioServlet extends HttpServlet {
                 request.getRequestDispatcher("index.jsp").forward(request, response);
                 return;
             }
+            String nom = request.getParameter("nom");
+            String pat = request.getParameter("pat");
+            String mat = request.getParameter("mat");
+            if ("DOCTOR".equals(tipo)) {
+                String cedulaInput = request.getParameter("cedula");
+
+                datos.DAO.sepDAO sDAO = new datos.DAO.sepDAO();
+                modelo.CedulaSEP cedulaValidada = sDAO.consultarCedulaOficial(cedulaInput);
+
+                // Filtro 1: ¿La cédula existe en la SEP?
+                if (cedulaValidada == null) {
+                    System.out.println("⚠️ SEGURIDAD: Intento de registro con cédula inexistente: " + cedulaInput);
+                    response.sendRedirect("index.jsp?errorCedula=1");
+                    return;
+                }
+
+                // Filtro 2: ¿La cédula le pertenece a quien se está registrando?
+                // Comparamos ignorando mayúsculas/minúsculas y quitando espacios extra
+                boolean coincideNombre = cedulaValidada.getNombre().equalsIgnoreCase(nom.trim());
+                boolean coincidePaterno = cedulaValidada.getPaterno().equalsIgnoreCase(pat.trim());
+
+                // El apellido materno a veces es opcional, lo validamos de forma segura
+                boolean coincideMaterno = true;
+                if (cedulaValidada.getMaterno() != null && !cedulaValidada.getMaterno().trim().isEmpty()) {
+                    String matInput = (mat != null) ? mat.trim() : "";
+                    coincideMaterno = cedulaValidada.getMaterno().equalsIgnoreCase(matInput);
+                }
+
+                // Si al menos un dato no coincide, bloqueamos por usurpación de identidad
+                if (!coincideNombre || !coincidePaterno || !coincideMaterno) {
+                    System.out.println("🚨 ALERTA ROJA: Posible usurpación de identidad. Cédula " + cedulaInput +
+                            " pertenece a " + cedulaValidada.getNombre() + " pero fue usada por " + nom);
+                    response.sendRedirect("index.jsp?errorIdentidad=1");
+                    return;
+                }
+            }
 
             // 1. GENERAMOS EL TOKEN ANTES DE GUARDAR
             String tokenGenerado = java.util.UUID.randomUUID().toString();
