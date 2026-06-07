@@ -29,34 +29,6 @@ public class doctorDAO {
         }
     }
 
-    // Método para listar doctores
-    public List<Doctor> todos() {
-        List<Doctor> lista = new ArrayList<>();
-        String sql = "SELECT idDoctor, idUsuario, idEspecialidad, (datos_personales).nombre, (datos_personales).paterno, (datos_personales).materno, direccion, cedula FROM Doctor";
-
-        try (Connection con = conection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                Doctor d = new Doctor();
-                d.setIdDoctor(rs.getInt("idDoctor"));
-                d.setIdUsuario(rs.getInt("idUsuario"));
-                d.setIdEspecialidad(rs.getInt("idEspecialidad"));
-                d.setNombre(rs.getString("nombrePila"));
-                d.setPaterno(rs.getString("paterno"));
-                d.setMaterno(rs.getString("materno"));
-                d.setCedula(rs.getString("cedula"));
-                d.setDireccion(rs.getString("direccion"));
-
-                lista.add(d);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al listar doctores: " + e.getMessage());
-        }
-        return lista;
-    }
-
     public List<modelo.Doctor> buscarDoctores(String parametro, String ubicacionBusqueda) {
         List<modelo.Doctor> lista = new ArrayList<>();
 

@@ -108,14 +108,12 @@
 
     <div class="top-banner">
         <span>Convierte el interés de los pacientes en agendamientos</span>
-        <button class="btn-outline">Descubrir planes</button>
+        <a href="planes.jsp" class="btn-outline" style="text-decoration: none; display: inline-block; text-align: center;">Descubrir planes</a>
     </div>
 
     <!-- SALUDO DINÁMICO -->
     <h2>Hola, Dr(a). <%= nombreDoctor %>
     </h2>
-    <p style="color: red;">ID de Usuario en Sesión: <%= usuarioLogueado.getIdUsuario() %>
-    </p>
     <span class="subtitle">Algunas métricas y acciones recomendadas para ti</span>
 
     <div class="card-container">
@@ -123,9 +121,11 @@
         <div class="card highlight">
             <h3>Completar perfil</h3>
             <p>Mejora tu posición en MedAgenda agregando más información a tu perfil público.</p>
-            <button style="background: white; border: 1px solid #00796b; color: #00796b; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+
+            <a href="editarPerfil.jsp" class="btn-outline"
+               style="background: white; border: 1px solid #00796b; color: #00796b; padding: 8px 15px; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; font-size: 14px; font-weight: 500;">
                 Agregar información
-            </button>
+            </a>
         </div>
 
         <!-- Tarjeta 2 -->
@@ -147,7 +147,6 @@
         </div>
     </div>
 
-    <!-- NUEVA SECCIÓN: AGENDA DE CITAS -->
     <h3 id="seccion-agenda" tyle="margin-top: 40px; color: #333;">Mi Agenda</h3>
     <div class="card" style="width: 100%; padding: 20px; overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; text-align: left;">
@@ -213,7 +212,6 @@
 
 </div>
 <script>
-    // Cuando la página termine de cargar por completo...
     window.addEventListener('DOMContentLoaded', () => {
         const alertas = document.querySelectorAll('.alerta-temporal');
 

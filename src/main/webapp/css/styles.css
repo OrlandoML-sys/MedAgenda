@@ -1,62 +1,16 @@
-/* Colores estilo Doctoralia */
 /*LOGIN*/
-.bg-medagenda {
-    background-color: #007c70 !important;
-}
-
-.text-medagenda {
-    color: #007c70 !important;
-}
-
-.hero-section {
-    background-color: #007c70; color: white; padding: 100px 0 80px 0;
-}
-
-body {
-    padding-top: 60px;
-}
-.phone-section {
-    border: none;
-    padding: 0;
-    margin-bottom: 20px;
-    font-family: sans-serif;
-}
-
-.label {
-    font-weight: bold;
-    font-size: 1rem;
-    color: #333;
-}
-
-.hint {
-    font-size: 0.85rem;
-    color: #666;
-    margin: 4px 0 12px 0;
-}
-
-.phone-input-container {
-    display: flex;
-    gap: 10px;
-}
-
-.prefix-select {
-    flex: 0 0 100px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-}
-
-.phone-field {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
-}
-
-.phone-field:focus, .prefix-select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0,123,255,0.2);
-}
+.bg-medagenda {background-color: #007c70 !important;}
+.text-medagenda {color: #007c70 !important;}
+.hero-section {background-color: #007c70; color: white; padding: 100px 0 80px 0;}
+body {padding-top: 60px;}
+.phone-section {border: none;padding: 0;margin-bottom: 20px;font-family: sans-serif;}
+.label {font-weight: bold;font-size: 1rem;color: #333;}
+.hint {font-size: 0.85rem;color: #666;margin: 4px 0 12px 0;}
+.phone-input-container {display: flex;gap: 10px;}
+.prefix-select {flex: 0 0 100px;padding: 10px;border: 1px solid #ccc;border-radius: 8px;background-color: #f9f9f9;}
+.phone-field {flex: 1;padding: 10px;border: 1px solid #ccc;border-radius: 8px;font-size: 1rem;}
+.phone-field:focus, .prefix-select:focus {outline: none;border-color: #007bff;box-shadow: 0 0 5px rgba(0,123,255,0.2);}
+@keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+@keyframes floatDelayed { 0% { transform: translateY(0px); } 50% { transform: translateY(8px); } 100% { transform: translateY(0px); } }
+.floating-card {animation: float 6s ease-in-out infinite;}
+.floating-card-delayed {animation: floatDelayed 5s ease-in-out infinite;}

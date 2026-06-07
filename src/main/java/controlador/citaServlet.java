@@ -3,20 +3,18 @@ package controlador;
 import datos.DAO.citaDAO;
 import modelo.Cita;
 import modelo.Usuario;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @WebServlet("/CitaServlet")
 public class citaServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
 
         // 1. Obtener el paciente de la sesión (Seguridad)
         HttpSession session = request.getSession();

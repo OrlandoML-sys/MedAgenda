@@ -4,44 +4,17 @@
 label { display: block; margin-bottom: 8px; font-weight: bold; }
 input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
 .btn-submit { background-color: #00796b; color: white; padding: 15px; border: none; border-radius: 6px; width: 100%; cursor: pointer; font-size: 16px; }
+
 /* El estilo de los bloques de horario */
-.horarios-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
-}
+.horarios-grid {display: grid;grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));gap: 15px;margin-top: 15px;}
 
-/* Ocultamos el input de radio real */
-.horarios-grid input[type="radio"] {
-    display: none;
-}
+.horarios-grid input[type="radio"] {display: none;}
 
-/* Diseñamos el 'label' para que parezca un botón clickeable */
-.hora-btn {
-    background-color: #f0f0f0;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    padding: 12px;
-    text-align: center;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: block;
-}
+.hora-btn {background-color: #f0f0f0;border: 2px solid #ddd;border-radius: 8px;padding: 12px;text-align: center;font-weight: bold;color: #333;cursor: pointer;transition: all 0.2s ease;display: block;}
 
-.hora-btn:hover {
-    background-color: #e0f2f1;
-    border-color: #009688;
-}
+.hora-btn:hover {background-color: #e0f2f1;border-color: #009688;}
 
-.horarios-grid input[type="radio"]:checked + .hora-btn {
-    background-color: #00796b;
-    color: white;
-    border-color: #004d40;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
+.horarios-grid input[type="radio"]:checked + .hora-btn {background-color: #00796b;color: white;border-color: #004d40;box-shadow: 0 4px 8px rgba(0,0,0,0.2);}
 .container { max-width: 600px; margin: 40px auto; padding: 20px; font-family: sans-serif; }
 .form-group { margin-bottom: 20px; }
 label { display: block; margin-bottom: 8px; font-weight: bold; }

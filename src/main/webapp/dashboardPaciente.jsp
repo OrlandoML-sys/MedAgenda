@@ -51,7 +51,15 @@
 
 <nav class="navbar">
     <a href="#" class="logo">⚕️ MedAgenda</a>
-    <div>Mi cuenta ▾</div>
+
+    <div class="dropdown-cuenta">
+        <div class="dropdown-trigger">Mi cuenta ▾</div>
+        <div class="dropdown-menu-content">
+            <a href="logoutServlet" class="dropdown-item-logout">
+                🚪 Cerrar sesión
+            </a>
+        </div>
+    </div>
 </nav>
 
 <div class="hero">
@@ -139,7 +147,6 @@
                 String doctorLimpio = e.getNombreDoctor() != null ? e.getNombreDoctor().replaceAll("[\"(),]", " ").trim() : "Especialista";
                 String fechaFormateada = e.getFechaCita() != null ? sdf.format(e.getFechaCita()) : "---";
 
-                // Limpieza rápida de seguridad para evitar que comillas dobles rompan el HTML del atributo
                 String diagSeguro = e.getDiagnostico() != null ? e.getDiagnostico().replace("\"", "&quot;") : "";
                 String tratSeguro = e.getTratamiento() != null ? e.getTratamiento().replace("\"", "&quot;") : "";
         %>

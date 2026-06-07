@@ -22,23 +22,8 @@ h2 { color: #333; margin-top: 0; }
 .metric-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; color: #555;}
 .metric-row:last-child { border-bottom: none; }
 .metric-value { font-size: 24px; font-weight: bold; color: #333; }
-.table-container {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-top: 20px;
-}
-.table-container table {
-    width: 100%;
-    border-collapse: collapse;
-}
-.table-container th {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 2px solid #eee;
-}
-.table-container td {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-}
+
+.table-container {background: white;padding: 20px;border-radius: 8px;box-shadow: 0 2px 4px rgba(0,0,0,0.1);margin-top: 20px;}
+.table-container table {width: 100%;border-collapse: collapse;}
+.table-container th {padding: 12px;text-align: left;border-bottom: 2px solid #eee;}
+.table-container td {padding: 12px;border-bottom: 1px solid #eee;}

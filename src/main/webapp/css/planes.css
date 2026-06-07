@@ -1,0 +1,9 @@
+body { background-color: #f4f7f6; font-family: sans-serif; }
+.text-medagenda { color: #00796b; }
+.bg-medagenda { background-color: #00796b; }
+.plan-card {background: white;border: 1px solid #e2e8f0;border-radius: 12px;transition: all 0.3s ease;position: relative;}
+.plan-card:hover {transform: translateY(-5px);box-shadow: 0 10px 20px rgba(0,0,0,0.05);}
+.plan-destacado {border: 2.5px solid #00796b !important;box-shadow: 0 8px 16px rgba(0, 121, 107, 0.1);}
+.badge-estrella {position: absolute;top: -12px;left: 50%;transform: translateX(-50%);background-color: #00796b;color: white;padding: 4px 15px;border-radius: 20px;font-size: 12px;font-weight: bold;text-transform: uppercase;}
+.price { font-size: 32px; font-weight: bold; color: #2d3748; }
+.price span { font-size: 16px; font-weight: normal; color: #718096; }

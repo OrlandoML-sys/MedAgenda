@@ -1,0 +1,5 @@
+body { background-color: #f4f7f6; }
+.bg-medagenda { background-color: #00796b; color: white; }
+.text-medagenda { color: #00796b; }
+.profile-header {background: linear-gradient(135deg, #00796b 0%, #004d40 100%);height: 120px;border-radius: 10px 10px 0 0;}
+.profile-avatar {width: 100px;height: 100px;background-color: #e0f2f1;color: #00796b;border: 4px solid white;border-radius: 50%;display: flex;align-items: center;justify-content: center;font-size: 36px;font-weight: bold;margin: -50px auto 20px auto;box-shadow: 0 4px 6px rgba(0,0,0,0.1);}

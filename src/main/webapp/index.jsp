@@ -1,4 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="modelo.Doctor" %>
+<%@ page import="datos.DAO.doctorDAO" %>
 <!DOCTYPE html>
 <html lang="es" style="scroll-behavior: smooth;">
 <head>
@@ -33,6 +36,7 @@
                     <button class="btn btn-light text-medagenda fw-bold rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalRegistro">Crear cuenta</button>
                 </li>
             </ul>
+
         </div>
     </div>
 </nav>
@@ -44,18 +48,113 @@
             <div class="col-lg-6">
                 <h1 class="display-4 fw-bold mb-3">Encuentra tu especialista y pide cita</h1>
                 <p class="lead mb-4">Miles de profesionales de la salud están aquí para ayudarte a ti y a tu familia.</p>
-                <!-- Un buscador falso decorativo para dar ese look comercial -->
-                <div class="bg-white p-2 rounded shadow-sm d-flex">
-                    <input type="text" class="form-control border-0" placeholder="Especialidad o nombre del doctor...">
-                    <button class="btn btn-success bg-medagenda px-4">Buscar</button>
-                </div>
+                <form action="index.jsp" method="GET" class="bg-white p-2 rounded shadow-sm d-flex w-100">
+                    <input type="text" name="q" class="form-control border-0"
+                           placeholder="Especialidad o nombre del doctor..."
+                           value="<%= request.getParameter("q") != null ? request.getParameter("q") : "" %>" required>
+                    <button type="submit" class="btn btn-success bg-medagenda px-4">🔍 Buscar</button>
+                </form>
             </div>
-            <div class="col-lg-6 d-none d-lg-block text-center">
-                <img src="https://via.placeholder.com/500x300/005a52/ffffff?text=Ilustracion+Medicos" alt="Doctores" class="img-fluid rounded">
+            <div class="col-lg-6 d-none d-lg-block position-relative" style="min-height: 400px;">
+
+                <div class="card shadow-lg p-4 border-0 position-absolute floating-card"
+                     style="width: 380px; border-radius: 16px; top: 15px; left: 215px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); z-index: 2;">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4"
+                             style="width: 50px; height: 50px; background-color: #e0f2f1; color: #00796b !important;">
+                            SH
+                        </div>
+                        <div class="ms-3 text-start">
+                            <h5 class="mb-0 fw-bold text-dark" style="font-size: 16px;">Dr(a). Sofía Hernández P.</h5>
+                            <p class="mb-0 text-muted small">💡 Dermatología · UV</p>
+                        </div>
+                        <span class="badge ms-auto bg-success" style="background-color: #2ecc71 !important; font-size: 11px;">🟢 Disponible</span>
+                    </div>
+
+                    <div class="p-2 rounded mb-3 text-start" style="background-color: #f8f9fa; font-size: 13px; border-left: 3px solid #00796b;">
+                        <span class="text-muted d-block small">Última consulta realizada:</span>
+                        <strong class="text-dark">"Tratamiento de acné juvenil avanzado"</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted font-monospace small">🛡️ Cédula: 20000004</span>
+                        <div class="text-warning small">⭐⭐⭐⭐⭐ <span class="text-muted">(48)</span></div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 position-absolute p-2 d-flex flex-row align-items-center"
+                     style="width: 290px; border-radius: 30px; top: 255px; left: 80px; background: rgba(0, 90, 82, 0.9); color: white; z-index: 4;">
+                    <span class="fs-5 ms-2 me-2">🦅</span>
+                    <div class="text-start">
+                        <span class="fw-bold d-block" style="font-size: 12px; letter-spacing: 0.5px;">CONEXIÓN OFICIAL SEP</span>
+                        <span class="small text-white-50" style="font-size: 11px;">Validación de identidad biomédica</span>
+                    </div>
+                </div>
+
+                <div class="card shadow border-0 position-absolute floating-card-delayed p-3"
+                     style="width: 250px; border-radius: 14px; bottom: 35px; right: 0px; background: #ffffff; z-index: 3; border-top: 4px solid #00796b;">
+                    <div class="d-flex align-items-center">
+                        <div class="fs-3 me-3">📅</div>
+                        <div class="text-start">
+                            <span class="text-muted d-block small" style="font-size: 11px; text-transform: uppercase; font-weight: bold;">Eficiencia MedAgenda</span>
+                            <strong class="text-dark" style="font-size: 17px;">+1,240 Citas</strong>
+                            <p class="mb-0 text-success small fw-bold" style="font-size: 12px;">📊 Agendadas este mes</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 </section>
+
+<%
+    String queryBusqueda = request.getParameter("q");
+    if (queryBusqueda != null && !queryBusqueda.trim().isEmpty()) {
+        doctorDAO daoDoc = new doctorDAO();
+        List<Doctor> resultadosPublicos = daoDoc.buscarDoctores(queryBusqueda.trim(), "");
+%>
+<section class="container my-5" style="max-width: 900px;">
+    <h3 class="text-medagenda fw-bold mb-4">🩺 Especialistas encontrados para: <span class="text-dark">"<%= queryBusqueda %>"</span></h3>
+
+    <% if (resultadosPublicos.isEmpty()) { %>
+    <div class="alert alert-warning text-center border-0 shadow-sm">
+        No se encontraron profesionales de la salud que coincidan con los términos ingresados. Intenta con otra especialidad.
+    </div>
+    <% } else {
+        for(Doctor doc : resultadosPublicos) {
+    %>
+    <div class="doctor-card p-4 mb-3" style="background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; border-left: 5px solid #00796b; display: flex; justify-content: space-between; align-items: center;">
+        <div class="text-start">
+            <h4 style="margin: 0; color: #00796b; font-weight: bold; font-size: 18px;">
+                Dr(a). <%= doc.getNombre() != null ? doc.getNombre().replaceAll("[\"(),]", " ").trim() : "Especialista" %>
+            </h4>
+            <p style="margin: 5px 0 0 0; color: #4a5568; font-weight: bold; font-size: 14px;">
+                🩺 <%= doc.getNombreEspecialidad() != null ? doc.getNombreEspecialidad().replaceAll("[\"(),]", "") : "Medicina General" %>
+            </p>
+            <p style="margin: 5px 0 0 0; color: #718096; font-size: 13px;">
+                📍 <%= doc.getDireccion() != null ? doc.getDireccion() : "Dirección no especificada" %>
+            </p>
+        </div>
+
+        <div>
+            <% if (session.getAttribute("usuarioLogueado") != null && "PACIENTE".equals(((modelo.Usuario)session.getAttribute("usuarioLogueado")).getRol())) { %>
+            <a href="agendar.jsp?idDoctor=<%= doc.getIdDoctor() %>" class="btn btn-success bg-medagenda fw-bold px-4 py-2 rounded-pill text-white" style="text-decoration: none;">
+                📅 Pedir Cita
+            </a>
+            <% } else { %>
+            <button class="btn btn-success bg-medagenda fw-bold px-4 py-2 rounded-pill" data-bs-toggle="modal" data-bs-target="#modalLogin">
+                📅 Pedir Cita
+            </button>
+            <% } %>
+        </div>
+    </div>
+    <%
+            }
+        }
+    %>
+</section>
+<% } %>
 
 <!-- SECCIÓN ACERCA DE NOSOTROS (About Us) -->
 <section id="aboutUs" class="py-5 bg-light" style="min-height: 60vh;">

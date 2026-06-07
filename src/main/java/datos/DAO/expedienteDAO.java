@@ -36,28 +36,6 @@ public class expedienteDAO {
         }
     }
 
-    public Expediente obtenerPorCita(int idCita) {
-        Expediente exp = null;
-        try (Connection conn = conection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(SQL_LISTADO)) {
-            ps.setInt(1, idCita);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    exp = new Expediente();
-                    exp.setIdExpediente(rs.getInt("idExpediente"));
-                    exp.setIdCita(rs.getInt("idCita"));
-                    exp.setDiagnostico(rs.getString("diagnostico"));
-                    exp.setTratamiento(rs.getString("tratamiento"));
-                    exp.setNotasJSON(rs.getString("notasJSON"));
-                }
-            }
-        } catch (SQLException ex) {
-            System.err.println("Error al obtener expediente por cita: " + ex.getMessage());
-            ex.printStackTrace(System.out);
-        }
-        return exp;
-    }
-
     public List<modelo.Expediente> obtenerExpedientesPorPaciente(int idPaciente) {
         List<modelo.Expediente> lista = new ArrayList<>();
 

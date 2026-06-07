@@ -19,7 +19,6 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
 
-                <!-- Alerta de Error por si falla el Servlet -->
                 <% if("1".equals(request.getParameter("error"))) { %>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <i class="fa-solid fa-circle-exclamation me-2"></i> Hubo un problema al guardar el expediente. Revisa los datos.
@@ -33,11 +32,9 @@
                         <h4 class="card-title mb-0 fw-bold text-medagenda">
                             <i class="fa-solid fa-file-medical me-2"></i>Nueva Nota Médica / Expediente
                         </h4>
-                        <small class="text-muted">Asociado a la Cita ID: #<%= request.getParameter("idCita") %></small>
                     </div>
 
                     <form action="ExpedienteServlet" method="POST" class="needs-validation" novalidate>
-                        <!-- Enviamos el idCita oculto que recuperamos del parámetro de la URL -->
                         <input type="hidden" name="idCita" value="<%= request.getParameter("idCita") %>">
 
                         <div class="card-body p-4">
@@ -74,7 +71,7 @@
 
                         <!-- BOTONES DE ACCIÓN -->
                         <div class="card-footer bg-white border-top p-3 d-flex justify-content-between align-items-center">
-                            <a href="index.jsp" class="btn btn-outline-secondary px-4"><i class="fa-solid fa-arrow-left me-2"></i>Volver</a>
+                            <a href="dashboardDoctor.jsp" class="btn btn-outline-secondary px-4"><i class="fa-solid fa-arrow-left me-2"></i>Volver</a>
                             <button type="submit" class="btn btn-medagenda px-5 fw-bold shadow-sm">
                                 <i class="fa-solid fa-floppy-disk me-2"></i>Guardar Expediente
                             </button>

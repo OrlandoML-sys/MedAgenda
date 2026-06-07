@@ -27,26 +27,4 @@ public class pacienteDAO {
             return false;
         }
     }
-
-    public List<Paciente> listar() {
-        List<Paciente> lista = new ArrayList<>();
-        try(Connection conn = conection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(listado);
-            ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Paciente p = new Paciente();
-                p.setIdPaciente(rs.getInt("idPaciente"));
-                p.setCurp(rs.getString("curp"));
-                p.setNombre(rs.getString("nombrePila"));
-                p.setPaterno(rs.getString("paterno"));
-                p.setMaterno(rs.getString("materno"));
-                p.setFechaNacimiento(rs.getDate("fechaNacimiento"));
-
-                lista.add(p);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al listar pacientes: " + e.getMessage());
-        }
-        return lista;
-    }
 }

@@ -1,13 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    // 1. Validar que haya un paciente en sesión
     modelo.Usuario usuarioLogueado = (modelo.Usuario) session.getAttribute("usuarioLogueado");
     if (usuarioLogueado == null || !"PACIENTE".equals(usuarioLogueado.getRol())) {
         response.sendRedirect("login.jsp");
         return;
     }
 
-    // 2. Atrapar el ID del doctor dinámicamente desde la URL
     String idDoctorStr = request.getParameter("idDoctor");
     if(idDoctorStr == null || idDoctorStr.isEmpty()){
         response.sendRedirect("dashboardPaciente.jsp");

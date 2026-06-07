@@ -11,9 +11,9 @@
 4||10|c|G
 4||10|C|G
 4||10|T|G</Grants>
-      <IntrospectionStateNumber>1024</IntrospectionStateNumber>
+      <IntrospectionStateNumber>1071</IntrospectionStateNumber>
       <ServerVersion>16.11</ServerVersion>
-      <StartupTime>1779602924</StartupTime>
+      <StartupTime>1780619092</StartupTime>
       <TimeZones>true ACDT
 true ACSST
 false ACST
@@ -1416,7 +1416,7 @@ true posixrules
 14301||10|C|G
 14301||-9223372036854775808|U|G
 14301||10|U|G</Grants>
-      <IntrospectionStateNumber>1024</IntrospectionStateNumber>
+      <IntrospectionStateNumber>1071</IntrospectionStateNumber>
       <ObjectId>16569</ObjectId>
       <OwnerName>rlndmdrgl</OwnerName>
     </database>
@@ -4850,11 +4850,11 @@ true posixrules
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <LastIntrospectionL1Xid>1024</LastIntrospectionL1Xid>
-      <LastIntrospectionL2Xid>1024</LastIntrospectionL2Xid>
-      <LastIntrospectionL3Xid>1024</LastIntrospectionL3Xid>
+      <LastIntrospectionL1Xid>1071</LastIntrospectionL1Xid>
+      <LastIntrospectionL2Xid>1071</LastIntrospectionL2Xid>
+      <LastIntrospectionL3Xid>1071</LastIntrospectionL3Xid>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2026-05-24.02:06:59</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2026-06-05.01:36:25</LastIntrospectionLocalTimestamp>
       <LastIntrospectionVersion>260210</LastIntrospectionVersion>
       <ObjectId>2200</ObjectId>
       <StateNumber>523</StateNumber>
@@ -4927,7 +4927,7 @@ true posixrules
       <ObjectId>16674</ObjectId>
       <SequenceIdentity>1</SequenceIdentity>
       <StartValue>1</StartValue>
-      <StateNumber>1012</StateNumber>
+      <StateNumber>1038</StateNumber>
       <StoredType>integer|0s</StoredType>
       <OwnerName>rlndmdrgl</OwnerName>
     </sequence>
@@ -4943,7 +4943,7 @@ true posixrules
     <table id="278" parent="268" name="cita">
       <DetailsLevel>2</DetailsLevel>
       <ObjectId>16628</ObjectId>
-      <StateNumber>1012</StateNumber>
+      <StateNumber>1034</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>rlndmdrgl</OwnerName>
     </table>
@@ -4985,36 +4985,43 @@ true posixrules
     <table id="284" parent="268" name="pago">
       <DetailsLevel>2</DetailsLevel>
       <ObjectId>16675</ObjectId>
-      <StateNumber>1012</StateNumber>
+      <StateNumber>1038</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>rlndmdrgl</OwnerName>
     </table>
-    <table id="285" parent="268" name="usuario">
+    <table id="285" parent="268" name="sep_cedula">
+      <DetailsLevel>2</DetailsLevel>
+      <ObjectId>17291</ObjectId>
+      <StateNumber>1046</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>rlndmdrgl</OwnerName>
+    </table>
+    <table id="286" parent="268" name="usuario">
       <DetailsLevel>2</DetailsLevel>
       <ObjectId>16571</ObjectId>
       <StateNumber>1012</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>rlndmdrgl</OwnerName>
     </table>
-    <object-attribute id="286" parent="269" name="nombrepila">
+    <object-attribute id="287" parent="269" name="nombrepila">
       <Position>1</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </object-attribute>
-    <object-attribute id="287" parent="269" name="paterno">
+    <object-attribute id="288" parent="269" name="paterno">
       <Position>2</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </object-attribute>
-    <object-attribute id="288" parent="269" name="materno">
+    <object-attribute id="289" parent="269" name="materno">
       <Position>3</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </object-attribute>
-    <check id="289" parent="278" name="cita_estado_check">
+    <check id="290" parent="278" name="cita_estado_check">
       <ColNames>estado</ColNames>
-      <ObjectId>16633</ObjectId>
-      <Predicate>(estado)::text = ANY ((ARRAY[&apos;PENDIENTE&apos;::character varying, &apos;REALIZADA&apos;::character varying, &apos;CANCELADA&apos;::character varying])::text[])</Predicate>
-      <StateNumber>901</StateNumber>
+      <ObjectId>17282</ObjectId>
+      <Predicate>(estado)::text = ANY ((ARRAY[&apos;PENDIENTE&apos;::character varying, &apos;REALIZADA&apos;::character varying, &apos;CANCELADA&apos;::character varying, &apos;PAGADA&apos;::character varying])::text[])</Predicate>
+      <StateNumber>1034</StateNumber>
     </check>
-    <column id="290" parent="278" name="idcita">
+    <column id="291" parent="278" name="idcita">
       <DefaultExpression>nextval(&apos;cita_idcita_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5023,39 +5030,39 @@ true posixrules
       <SequenceId>16627</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="291" parent="278" name="idpaciente">
+    <column id="292" parent="278" name="idpaciente">
       <Position>2</Position>
       <StateNumber>901</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="292" parent="278" name="iddoctor">
+    <column id="293" parent="278" name="iddoctor">
       <Position>3</Position>
       <StateNumber>901</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="293" parent="278" name="fechahora">
+    <column id="294" parent="278" name="fechahora">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>901</StateNumber>
       <StoredType>timestamp|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <column id="294" parent="278" name="motivo">
+    <column id="295" parent="278" name="motivo">
       <Position>5</Position>
       <StateNumber>901</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="295" parent="278" name="estado">
+    <column id="296" parent="278" name="estado">
       <DefaultExpression>&apos;PENDIENTE&apos;::character varying</DefaultExpression>
       <Position>6</Position>
       <StateNumber>901</StateNumber>
       <StoredType>varchar(20)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <foreign-key id="296" parent="278" name="cita_idpaciente_fkey">
+    <foreign-key id="297" parent="278" name="cita_idpaciente_fkey">
       <ColNames>idpaciente</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16636</ObjectId>
@@ -5063,7 +5070,7 @@ true posixrules
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>16617</RefTableId>
     </foreign-key>
-    <foreign-key id="297" parent="278" name="cita_iddoctor_fkey">
+    <foreign-key id="298" parent="278" name="cita_iddoctor_fkey">
       <ColNames>iddoctor</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16641</ObjectId>
@@ -5071,7 +5078,7 @@ true posixrules
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>16594</RefTableId>
     </foreign-key>
-    <index id="298" parent="278" name="cita_pkey">
+    <index id="299" parent="278" name="cita_pkey">
       <ColNames>idcita</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16634</ObjectId>
@@ -5080,14 +5087,14 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="299" parent="278" name="cita_pkey">
+    <key id="300" parent="278" name="cita_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16635</ObjectId>
       <Primary>1</Primary>
       <StateNumber>901</StateNumber>
       <UnderlyingIndexId>16634</UnderlyingIndexId>
     </key>
-    <column id="300" parent="279" name="iddoctor">
+    <column id="301" parent="279" name="iddoctor">
       <DefaultExpression>nextval(&apos;doctor_iddoctor_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5096,38 +5103,38 @@ true posixrules
       <SequenceId>16593</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="301" parent="279" name="idusuario">
+    <column id="302" parent="279" name="idusuario">
       <Position>2</Position>
       <StateNumber>899</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="302" parent="279" name="idespecialidad">
+    <column id="303" parent="279" name="idespecialidad">
       <Position>3</Position>
       <StateNumber>899</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="303" parent="279" name="nombre">
+    <column id="304" parent="279" name="nombre">
       <Position>4</Position>
       <StateNumber>899</StateNumber>
       <StoredType>personanombre|0s</StoredType>
       <TypeId>16583</TypeId>
     </column>
-    <column id="304" parent="279" name="cedula">
+    <column id="305" parent="279" name="cedula">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StateNumber>899</StateNumber>
       <StoredType>varchar(20)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="305" parent="279" name="direccion">
+    <column id="306" parent="279" name="direccion">
       <Position>6</Position>
       <StateNumber>908</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <foreign-key id="306" parent="279" name="doctor_idusuario_fkey">
+    <foreign-key id="307" parent="279" name="doctor_idusuario_fkey">
       <ColNames>idusuario</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16606</ObjectId>
@@ -5135,7 +5142,7 @@ true posixrules
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>16571</RefTableId>
     </foreign-key>
-    <foreign-key id="307" parent="279" name="doctor_idespecialidad_fkey">
+    <foreign-key id="308" parent="279" name="doctor_idespecialidad_fkey">
       <ColNames>idespecialidad</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16611</ObjectId>
@@ -5143,7 +5150,7 @@ true posixrules
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>16585</RefTableId>
     </foreign-key>
-    <index id="308" parent="279" name="doctor_pkey">
+    <index id="309" parent="279" name="doctor_pkey">
       <ColNames>iddoctor</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16600</ObjectId>
@@ -5152,7 +5159,7 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="309" parent="279" name="doctor_idusuario_key">
+    <index id="310" parent="279" name="doctor_idusuario_key">
       <ColNames>idusuario</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16602</ObjectId>
@@ -5160,7 +5167,7 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="310" parent="279" name="doctor_cedula_key">
+    <index id="311" parent="279" name="doctor_cedula_key">
       <ColNames>cedula</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16604</ObjectId>
@@ -5171,26 +5178,26 @@ true posixrules
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="311" parent="279" name="doctor_pkey">
+    <key id="312" parent="279" name="doctor_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16601</ObjectId>
       <Primary>1</Primary>
       <StateNumber>899</StateNumber>
       <UnderlyingIndexId>16600</UnderlyingIndexId>
     </key>
-    <key id="312" parent="279" name="doctor_idusuario_key">
+    <key id="313" parent="279" name="doctor_idusuario_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16603</ObjectId>
       <StateNumber>899</StateNumber>
       <UnderlyingIndexId>16602</UnderlyingIndexId>
     </key>
-    <key id="313" parent="279" name="doctor_cedula_key">
+    <key id="314" parent="279" name="doctor_cedula_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16605</ObjectId>
       <StateNumber>899</StateNumber>
       <UnderlyingIndexId>16604</UnderlyingIndexId>
     </key>
-    <column id="314" parent="280" name="idespecialidad">
+    <column id="315" parent="280" name="idespecialidad">
       <DefaultExpression>nextval(&apos;especialidad_idespecialidad_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5199,19 +5206,19 @@ true posixrules
       <SequenceId>16584</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="315" parent="280" name="nombre">
+    <column id="316" parent="280" name="nombre">
       <Position>2</Position>
       <StateNumber>898</StateNumber>
       <StoredType>personanombre|0s</StoredType>
       <TypeId>16583</TypeId>
     </column>
-    <column id="316" parent="280" name="descripcion">
+    <column id="317" parent="280" name="descripcion">
       <Position>3</Position>
       <StateNumber>898</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <index id="317" parent="280" name="especialidad_pkey">
+    <index id="318" parent="280" name="especialidad_pkey">
       <ColNames>idespecialidad</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16591</ObjectId>
@@ -5220,14 +5227,14 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="318" parent="280" name="especialidad_pkey">
+    <key id="319" parent="280" name="especialidad_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16592</ObjectId>
       <Primary>1</Primary>
       <StateNumber>898</StateNumber>
       <UnderlyingIndexId>16591</UnderlyingIndexId>
     </key>
-    <column id="319" parent="281" name="idexpediente">
+    <column id="320" parent="281" name="idexpediente">
       <DefaultExpression>nextval(&apos;expediente_idexpediente_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5236,31 +5243,31 @@ true posixrules
       <SequenceId>16658</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="320" parent="281" name="idcita">
+    <column id="321" parent="281" name="idcita">
       <Position>2</Position>
       <StateNumber>903</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="321" parent="281" name="diagnostico">
+    <column id="322" parent="281" name="diagnostico">
       <Position>3</Position>
       <StateNumber>903</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="322" parent="281" name="tratamiento">
+    <column id="323" parent="281" name="tratamiento">
       <Position>4</Position>
       <StateNumber>903</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="323" parent="281" name="notasjson">
+    <column id="324" parent="281" name="notasjson">
       <Position>5</Position>
       <StateNumber>903</StateNumber>
       <StoredType>jsonb|0s</StoredType>
       <TypeId>3802</TypeId>
     </column>
-    <foreign-key id="324" parent="281" name="expediente_idcita_fkey">
+    <foreign-key id="325" parent="281" name="expediente_idcita_fkey">
       <ColNames>idcita</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16669</ObjectId>
@@ -5268,7 +5275,7 @@ true posixrules
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>16628</RefTableId>
     </foreign-key>
-    <index id="325" parent="281" name="expediente_pkey">
+    <index id="326" parent="281" name="expediente_pkey">
       <ColNames>idexpediente</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16665</ObjectId>
@@ -5277,7 +5284,7 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="326" parent="281" name="expediente_idcita_key">
+    <index id="327" parent="281" name="expediente_idcita_key">
       <ColNames>idcita</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16667</ObjectId>
@@ -5285,20 +5292,20 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="327" parent="281" name="expediente_pkey">
+    <key id="328" parent="281" name="expediente_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16666</ObjectId>
       <Primary>1</Primary>
       <StateNumber>903</StateNumber>
       <UnderlyingIndexId>16665</UnderlyingIndexId>
     </key>
-    <key id="328" parent="281" name="expediente_idcita_key">
+    <key id="329" parent="281" name="expediente_idcita_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16668</ObjectId>
       <StateNumber>903</StateNumber>
       <UnderlyingIndexId>16667</UnderlyingIndexId>
     </key>
-    <column id="329" parent="282" name="idhorario">
+    <column id="330" parent="282" name="idhorario">
       <DefaultExpression>nextval(&apos;horariolaboral_idhorario_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5307,34 +5314,34 @@ true posixrules
       <SequenceId>16646</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="330" parent="282" name="iddoctor">
+    <column id="331" parent="282" name="iddoctor">
       <Position>2</Position>
       <StateNumber>902</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="331" parent="282" name="diasemana">
+    <column id="332" parent="282" name="diasemana">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>902</StateNumber>
       <StoredType>varchar(15)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="332" parent="282" name="horaentrada">
+    <column id="333" parent="282" name="horaentrada">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>902</StateNumber>
       <StoredType>time|0s</StoredType>
       <TypeId>1083</TypeId>
     </column>
-    <column id="333" parent="282" name="horasalida">
+    <column id="334" parent="282" name="horasalida">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StateNumber>902</StateNumber>
       <StoredType>time|0s</StoredType>
       <TypeId>1083</TypeId>
     </column>
-    <foreign-key id="334" parent="282" name="horariolaboral_iddoctor_fkey">
+    <foreign-key id="335" parent="282" name="horariolaboral_iddoctor_fkey">
       <ColNames>iddoctor</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16653</ObjectId>
@@ -5342,7 +5349,7 @@ true posixrules
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>16594</RefTableId>
     </foreign-key>
-    <index id="335" parent="282" name="horariolaboral_pkey">
+    <index id="336" parent="282" name="horariolaboral_pkey">
       <ColNames>idhorario</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16651</ObjectId>
@@ -5351,14 +5358,14 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="336" parent="282" name="horariolaboral_pkey">
+    <key id="337" parent="282" name="horariolaboral_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16652</ObjectId>
       <Primary>1</Primary>
       <StateNumber>902</StateNumber>
       <UnderlyingIndexId>16651</UnderlyingIndexId>
     </key>
-    <column id="337" parent="283" name="idpaciente">
+    <column id="338" parent="283" name="idpaciente">
       <DefaultExpression>nextval(&apos;paciente_idpaciente_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5367,31 +5374,31 @@ true posixrules
       <SequenceId>16616</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="338" parent="283" name="curp">
+    <column id="339" parent="283" name="curp">
       <Position>2</Position>
       <StateNumber>900</StateNumber>
       <StoredType>varchar(18)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="339" parent="283" name="nombre">
+    <column id="340" parent="283" name="nombre">
       <Position>3</Position>
       <StateNumber>900</StateNumber>
       <StoredType>personanombre|0s</StoredType>
       <TypeId>16583</TypeId>
     </column>
-    <column id="340" parent="283" name="fechanacimiento">
+    <column id="341" parent="283" name="fechanacimiento">
       <Position>4</Position>
       <StateNumber>900</StateNumber>
       <StoredType>date|0s</StoredType>
       <TypeId>1082</TypeId>
     </column>
-    <column id="341" parent="283" name="idusuario">
+    <column id="342" parent="283" name="idusuario">
       <Position>6</Position>
       <StateNumber>910</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <foreign-key id="342" parent="283" name="paciente_idusuario_fkey">
+    <foreign-key id="343" parent="283" name="paciente_idusuario_fkey">
       <ColNames>idusuario</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16695</ObjectId>
@@ -5399,7 +5406,7 @@ true posixrules
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>16571</RefTableId>
     </foreign-key>
-    <index id="343" parent="283" name="paciente_pkey">
+    <index id="344" parent="283" name="paciente_pkey">
       <ColNames>idpaciente</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16623</ObjectId>
@@ -5408,7 +5415,7 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="344" parent="283" name="paciente_curp_key">
+    <index id="345" parent="283" name="paciente_curp_key">
       <ColNames>curp</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16625</ObjectId>
@@ -5419,7 +5426,7 @@ true posixrules
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <index id="345" parent="283" name="paciente_idusuario_key">
+    <index id="346" parent="283" name="paciente_idusuario_key">
       <ColNames>idusuario</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16693</ObjectId>
@@ -5427,26 +5434,26 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="346" parent="283" name="paciente_pkey">
+    <key id="347" parent="283" name="paciente_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16624</ObjectId>
       <Primary>1</Primary>
       <StateNumber>900</StateNumber>
       <UnderlyingIndexId>16623</UnderlyingIndexId>
     </key>
-    <key id="347" parent="283" name="paciente_curp_key">
+    <key id="348" parent="283" name="paciente_curp_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16626</ObjectId>
       <StateNumber>900</StateNumber>
       <UnderlyingIndexId>16625</UnderlyingIndexId>
     </key>
-    <key id="348" parent="283" name="paciente_idusuario_key">
+    <key id="349" parent="283" name="paciente_idusuario_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16694</ObjectId>
       <StateNumber>910</StateNumber>
       <UnderlyingIndexId>16693</UnderlyingIndexId>
     </key>
-    <column id="349" parent="284" name="idpago">
+    <column id="350" parent="284" name="idpago">
       <DefaultExpression>nextval(&apos;pago_idpago_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5455,33 +5462,33 @@ true posixrules
       <SequenceId>16674</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="350" parent="284" name="idcita">
+    <column id="351" parent="284" name="idcita">
       <Position>2</Position>
       <StateNumber>904</StateNumber>
       <StoredType>integer|0s</StoredType>
       <TypeId>23</TypeId>
     </column>
-    <column id="351" parent="284" name="monto">
+    <column id="352" parent="284" name="monto">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>904</StateNumber>
       <StoredType>numeric(10,2 digit)|0s</StoredType>
       <TypeId>1700</TypeId>
     </column>
-    <column id="352" parent="284" name="metodopago">
+    <column id="353" parent="284" name="metodopago">
       <Position>4</Position>
       <StateNumber>904</StateNumber>
       <StoredType>varchar(50)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="353" parent="284" name="fechapago">
+    <column id="354" parent="284" name="fechapago">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>5</Position>
       <StateNumber>904</StateNumber>
       <StoredType>timestamp|0s</StoredType>
       <TypeId>1114</TypeId>
     </column>
-    <foreign-key id="354" parent="284" name="pago_idcita_fkey">
+    <foreign-key id="355" parent="284" name="pago_idcita_fkey">
       <ColNames>idcita</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16684</ObjectId>
@@ -5489,49 +5496,93 @@ true posixrules
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>16628</RefTableId>
     </foreign-key>
-    <index id="355" parent="284" name="pago_pkey">
+    <index id="356" parent="284" name="pago_pkey">
       <ColNames>idpago</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16680</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>1012</StateNumber>
+      <StateNumber>1038</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="356" parent="284" name="pago_idcita_key">
+    <index id="357" parent="284" name="pago_idcita_key">
       <ColNames>idcita</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16682</ObjectId>
-      <StateNumber>1012</StateNumber>
+      <StateNumber>1038</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="357" parent="284" name="pago_pkey">
+    <key id="358" parent="284" name="pago_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16681</ObjectId>
       <Primary>1</Primary>
       <StateNumber>904</StateNumber>
       <UnderlyingIndexId>16680</UnderlyingIndexId>
     </key>
-    <key id="358" parent="284" name="pago_idcita_key">
+    <key id="359" parent="284" name="pago_idcita_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16683</ObjectId>
       <StateNumber>904</StateNumber>
       <UnderlyingIndexId>16682</UnderlyingIndexId>
     </key>
-    <check id="359" parent="285" name="usuario_rol_check">
+    <column id="360" parent="285" name="num_cedula">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>1046</StateNumber>
+      <StoredType>varchar(10)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="361" parent="285" name="nombre">
+      <Position>2</Position>
+      <StateNumber>1046</StateNumber>
+      <StoredType>personanombre|0s</StoredType>
+      <TypeId>16583</TypeId>
+    </column>
+    <column id="362" parent="285" name="especialidad">
+      <Position>3</Position>
+      <StateNumber>1046</StateNumber>
+      <StoredType>varchar(100)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="363" parent="285" name="institucion">
+      <Position>4</Position>
+      <StateNumber>1046</StateNumber>
+      <StoredType>varchar(100)|0s</StoredType>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="364" parent="285" name="sep_cedula_pkey">
+      <ColNames>num_cedula</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>17296</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1046</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="365" parent="285" name="sep_cedula_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>17297</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1046</StateNumber>
+      <UnderlyingIndexId>17296</UnderlyingIndexId>
+    </key>
+    <check id="366" parent="286" name="usuario_rol_check">
       <ColNames>rol</ColNames>
       <ObjectId>16700</ObjectId>
       <Predicate>(rol)::text = ANY ((ARRAY[&apos;ADMIN&apos;::character varying, &apos;DOCTOR&apos;::character varying, &apos;ASISTENTE&apos;::character varying, &apos;PACIENTE&apos;::character varying])::text[])</Predicate>
       <StateNumber>923</StateNumber>
     </check>
-    <check id="360" parent="285" name="usuario_telefono_check">
+    <check id="367" parent="286" name="usuario_telefono_check">
       <ColNames>telefono</ColNames>
       <ObjectId>16948</ObjectId>
       <Predicate>(telefono)::text ~ &apos;^[0-9]+$&apos;::text</Predicate>
       <StateNumber>959</StateNumber>
     </check>
-    <column id="361" parent="285" name="idusuario">
+    <column id="368" parent="286" name="idusuario">
       <DefaultExpression>nextval(&apos;usuario_idusuario_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5540,54 +5591,54 @@ true posixrules
       <SequenceId>16570</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="362" parent="285" name="username">
+    <column id="369" parent="286" name="username">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>896</StateNumber>
       <StoredType>varchar(50)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="363" parent="285" name="rol">
+    <column id="370" parent="286" name="rol">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>896</StateNumber>
       <StoredType>varchar(20)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="364" parent="285" name="estaactivo">
+    <column id="371" parent="286" name="estaactivo">
       <DefaultExpression>true</DefaultExpression>
       <Position>5</Position>
       <StateNumber>896</StateNumber>
       <StoredType>boolean|0s</StoredType>
       <TypeId>16</TypeId>
     </column>
-    <column id="365" parent="285" name="email">
+    <column id="372" parent="286" name="email">
       <NotNull>1</NotNull>
       <Position>7</Position>
       <StateNumber>907</StateNumber>
       <StoredType>text|0s</StoredType>
       <TypeId>25</TypeId>
     </column>
-    <column id="366" parent="285" name="password">
+    <column id="373" parent="286" name="password">
       <Position>8</Position>
       <StateNumber>912</StateNumber>
       <StoredType>varchar(80)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="367" parent="285" name="telefono">
+    <column id="374" parent="286" name="telefono">
       <NotNull>1</NotNull>
       <Position>10</Position>
       <StateNumber>959</StateNumber>
       <StoredType>varchar(15)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="368" parent="285" name="token_verificacion">
+    <column id="375" parent="286" name="token_verificacion">
       <Position>11</Position>
       <StateNumber>970</StateNumber>
       <StoredType>varchar(255)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <index id="369" parent="285" name="usuario_pkey">
+    <index id="376" parent="286" name="usuario_pkey">
       <ColNames>idusuario</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16577</ObjectId>
@@ -5596,7 +5647,7 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="370" parent="285" name="usuario_username_key">
+    <index id="377" parent="286" name="usuario_username_key">
       <ColNames>username</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16579</ObjectId>
@@ -5607,7 +5658,7 @@ true posixrules
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <index id="371" parent="285" name="usuario_email_key">
+    <index id="378" parent="286" name="usuario_email_key">
       <ColNames>email</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16691</ObjectId>
@@ -5618,20 +5669,20 @@ true posixrules
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="372" parent="285" name="usuario_pkey">
+    <key id="379" parent="286" name="usuario_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16578</ObjectId>
       <Primary>1</Primary>
       <StateNumber>896</StateNumber>
       <UnderlyingIndexId>16577</UnderlyingIndexId>
     </key>
-    <key id="373" parent="285" name="usuario_username_key">
+    <key id="380" parent="286" name="usuario_username_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16580</ObjectId>
       <StateNumber>896</StateNumber>
       <UnderlyingIndexId>16579</UnderlyingIndexId>
     </key>
-    <key id="374" parent="285" name="usuario_email_key">
+    <key id="381" parent="286" name="usuario_email_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16692</ObjectId>
       <StateNumber>907</StateNumber>
