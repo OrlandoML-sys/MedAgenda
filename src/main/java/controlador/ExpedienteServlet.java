@@ -10,11 +10,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Controlador de Gestión Clínica.
+ * Procesa la redacción médica y empaqueta metadatos en estructura JSONB.
+ */
 @WebServlet("/ExpedienteServlet")
 public class ExpedienteServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        // Evita corrupción de caracteres especiales en diagnósticos médicos (acentos/ñ)
         request.setCharacterEncoding("UTF-8");
 
         String idCitaStr = request.getParameter("idCita");
@@ -24,6 +30,8 @@ public class ExpedienteServlet extends HttpServlet {
 
         try {
             int idCita = Integer.parseInt(idCitaStr);
+
+            // PREPARACIÓN DE DATOS NO ESTRUCTURADOS (JSON nativo para PostgreSQL)
             String notasJSONStr = "{\"alergias_reportadas\":\"" + (alergias != null ? alergias : "Ninguna") + "\"}";
 
             Expediente nuevoExp = new Expediente();
@@ -32,6 +40,7 @@ public class ExpedienteServlet extends HttpServlet {
             nuevoExp.setTratamiento(tratamiento);
             nuevoExp.setNotasJSON(notasJSONStr);
 
+            // PERSISTENCIA (El DAO además incluye un trigger simulado para cambiar el estado de la cita a 'REALIZADA')
             expedienteDAO expDAO = new expedienteDAO();
             boolean exito = expDAO.guardarExpediente(nuevoExp);
 

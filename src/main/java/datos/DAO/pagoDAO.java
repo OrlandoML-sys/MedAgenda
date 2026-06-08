@@ -4,8 +4,13 @@ import datos.conection;
 import modelo.Pago;
 import java.sql.*;
 
+/**
+ * Persistencia Financiera.
+ */
 public class pagoDAO {
+    // Delega el sellado de tiempo (CURRENT_TIMESTAMP) directamente al motor de base de datos para evitar desfases del servidor de aplicación
     private static final String SQL_INSERT = "INSERT INTO pago (idcita, monto, metodopago, fechapago) VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
+
     public boolean registrarPago(Pago pago) {
         try (Connection conn = conection.getConnection();
              PreparedStatement ps = conn.prepareStatement(SQL_INSERT)) {

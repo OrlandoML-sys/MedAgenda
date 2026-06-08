@@ -3,24 +3,26 @@
 <%@ page import="datos.DAO.expedienteDAO" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%
-    // Recuperamos el objeto de la sesión
+    // CONTROL DE ACCESO: Valida la sesión activa y restringe el acceso exclusivamente al rol Paciente
     modelo.Usuario usuarioLogueado = (modelo.Usuario) session.getAttribute("usuarioLogueado");
 
-    // Si no hay sesión iniciada, o si el rol NO es DOCTOR, lo pateamos de vuelta al login
     if (usuarioLogueado == null || !"PACIENTE".equals(usuarioLogueado.getRol())) {
         response.sendRedirect("index.jsp");
         return;
     }
 
+    // PREVENCIÓN DE CACHÉ: Fuerza la destrucción de la vista en el cliente al cerrar sesión por privacidad
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
     response.setDateHeader("Expires", 0);
 
+    // PERSISTENCIA: Recupera la colección completa de expedientes asociados al ID del paciente
     expedienteDAO daoExpediente = new expedienteDAO();
     List<Expediente> misExpedientes = daoExpediente.obtenerExpedientesPorPaciente(usuarioLogueado.getIdUsuario());
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
+    // CAPA DE DATOS: Consulta e higieniza el tipo compuesto nominal del paciente
     String nombrePaciente = "Paciente Registrado";
     try (java.sql.Connection conn = datos.conection.getConnection();
          java.sql.PreparedStatement ps = conn.prepareStatement("SELECT nombre FROM paciente WHERE idpaciente = ?")) {
@@ -51,13 +53,10 @@
 
 <nav class="navbar">
     <a href="#" class="logo">⚕️ MedAgenda</a>
-
     <div class="dropdown-cuenta">
         <div class="dropdown-trigger">Mi cuenta ▾</div>
         <div class="dropdown-menu-content">
-            <a href="logoutServlet" class="dropdown-item-logout">
-                🚪 Cerrar sesión
-            </a>
+            <a href="logoutServlet" class="dropdown-item-logout">🚪 Cerrar sesión</a>
         </div>
     </div>
 </nav>
@@ -66,13 +65,16 @@
     <h1>Encuentra tu especialista y pide cita</h1>
     <p>Cientos de profesionales de la salud están aquí para ayudarte.</p>
 
+    <%-- Recarga la misma vista mediante GET inyectando los parámetros en la URL --%>
     <form action="dashboardPaciente.jsp" method="GET" class="search-box">
         <input type="text" name="q" class="search-input" placeholder="Especialidad, enfermedad o nombre"
                value="<%= request.getParameter("q") != null ? request.getParameter("q") : "" %>">
         <input type="text" name="ubicacion" class="search-input" placeholder="p. ej. Veracruz">
         <button type="submit" class="btn-search">🔍 Buscar</button>
     </form>
-</div> <div class="categories">
+</div>
+
+<div class="categories">
     <a href="dashboardPaciente.jsp?q=Ginecología" class="category-tag">Ginecólogo</a>
     <a href="dashboardPaciente.jsp?q=Dermatología" class="category-tag">Dermatólogo</a>
     <a href="dashboardPaciente.jsp?q=Oftalmología" class="category-tag">Oftalmólogo</a>
@@ -81,16 +83,14 @@
 
 <div style="max-width: 1000px; margin: 40px auto;">
     <%
-        // 1. Capturamos AMBOS parámetros del formulario
         String queryBusqueda = request.getParameter("q");
         String ubicacionBusqueda = request.getParameter("ubicacion");
 
-        // 2. Si buscó algo en CUALQUIERA de los dos campos, llamamos al DAO
+        // Evalúa si existe alguna petición de consulta en el query string
         if ((queryBusqueda != null && !queryBusqueda.trim().isEmpty()) ||
                 (ubicacionBusqueda != null && !ubicacionBusqueda.trim().isEmpty())) {
 
             datos.DAO.doctorDAO daoDoc = new datos.DAO.doctorDAO();
-
             List<modelo.Doctor> resultados = daoDoc.buscarDoctores(queryBusqueda, ubicacionBusqueda);
 
             if (resultados.isEmpty()) {
@@ -104,10 +104,11 @@
                     (doc.getPaterno() != null ? doc.getPaterno() : "") + " " +
                     (doc.getMaterno() != null ? doc.getMaterno() : "");
     %>
+    <%-- Mapea la lista resultante en tarjetas con redirección parametrizada --%>
     <div class="doctor-card" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #00796b;">
         <div class="doctor-info">
             <h3 style="margin: 0; color: #00796b;">Dr(a). <%= doc.getNombre() != null ? doc.getNombre().replace("(", "").replace(")", "").replace(",", " ") : "Desconocido" %></h3>
-            <p style="margin: 5px 0 0 0; color: #555; font-weight: bold;">🩺 <%= doc.getNombreEspecialidad() != null ? doc.getNombreEspecialidad().replaceAll("[\"(),]", "") : "Medicina General" %></p>
+            <p style="margin: 5px 0 0 0; color: #555; font-weight: bold;">💡 <%= doc.getNombreEspecialidad() != null ? doc.getNombreEspecialidad().replaceAll("[\"(),]", "") : "Medicina General" %></p>
             <p style="margin: 5px 0 0 0; color: #999; font-size: 14px;">📍 <%= doc.getDireccion() != null ? doc.getDireccion() : "Dirección no especificada" %></p>
         </div>
 
@@ -119,7 +120,6 @@
     }
     }
     %>
-</div>
 </div>
 
 <div style="max-width: 1000px; margin: 40px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
@@ -147,6 +147,7 @@
                 String doctorLimpio = e.getNombreDoctor() != null ? e.getNombreDoctor().replaceAll("[\"(),]", " ").trim() : "Especialista";
                 String fechaFormateada = e.getFechaCita() != null ? sdf.format(e.getFechaCita()) : "---";
 
+                // Convierte comillas dobles en entidades HTML para no romper los atributos del DOM
                 String diagSeguro = e.getDiagnostico() != null ? e.getDiagnostico().replace("\"", "&quot;") : "";
                 String tratSeguro = e.getTratamiento() != null ? e.getTratamiento().replace("\"", "&quot;") : "";
         %>
@@ -156,6 +157,7 @@
             <td style="padding: 15px 10px; color: #555;"><%= e.getDiagnostico() %></td>
             <td style="padding: 15px 10px; color: #00796b; font-weight: bold;"><%= e.getTratamiento() %></td>
             <td style="padding: 15px 10px; text-align: center;">
+                <%-- Almacena el registro en los 'data-attributes' para el script de impresión --%>
                 <button onclick="imprimirRecetaUnica(this)"
                         data-fecha="<%= fechaFormateada %>"
                         data-doctor="Dr(a). <%= doctorLimpio %>"
@@ -172,7 +174,9 @@
         </tbody>
     </table>
 </div>
+
 <script>
+    // MÓDULO DE IMPRESIÓN (UX): Abre una ventana efímera en el cliente y maqueta el formato membretado dinámicamente
     function imprimirRecetaUnica(boton) {
         const fecha = boton.getAttribute('data-fecha');
         const doctor = boton.getAttribute('data-doctor');
@@ -243,6 +247,7 @@
         ventanaImpresion.document.close();
         ventanaImpresion.focus();
 
+        // Dispara la cola de impresión nativa del sistema operativo de manera asíncrona
         setTimeout(function() {
             ventanaImpresion.print();
             ventanaImpresion.close();

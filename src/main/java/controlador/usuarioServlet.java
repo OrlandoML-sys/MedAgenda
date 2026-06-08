@@ -15,6 +15,10 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Date;
 
+/**
+ * Controlador Frontal de Autenticación y Alta de Usuarios.
+ * Orquesta la seguridad, validaciones con la SEP y el despacho de correos transaccionales.
+ */
 @WebServlet("/UsuarioServlet")
 public class usuarioServlet extends HttpServlet {
 
@@ -22,6 +26,7 @@ public class usuarioServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // Deriva la petición según la acción definida en el formulario (Input hidden)
         String accion = request.getParameter("accion");
 
         if (accion.equals("login")) {
@@ -37,15 +42,16 @@ public class usuarioServlet extends HttpServlet {
         String pass = request.getParameter("txtPass");
 
         usuarioDAO uDAO = new usuarioDAO();
+        // SEGURIDAD: Valida credenciales enviando la contraseña encriptada (SHA/MD5 según modelo)
         Usuario u = uDAO.validar(user, Seguridad.encriptar(pass));
 
         if (u != null) {
-            // 1. Las credenciales son correctas. Verificamos el estado de la cuenta.
             if (u.isEstaActivo()) {
-                // ¡Todo perfecto! Iniciamos la sesión
+                // Genera una sesión HTTP y almacena el objeto Usuario global
                 HttpSession session = request.getSession();
                 session.setAttribute("usuarioLogueado", u);
 
+                // CONTROL DE ACCESO BASADO EN ROLES: Despacha al Dashboard correspondiente
                 String rol = u.getRol();
                 if("DOCTOR".equals(rol)) {
                     response.sendRedirect("dashboardDoctor.jsp");
@@ -55,12 +61,11 @@ public class usuarioServlet extends HttpServlet {
                     response.sendRedirect("index.jsp");
                 }
             } else {
-                // 2. Credenciales correctas, pero cuenta INACTIVA
+                // ADUANA DE ESTADO: Bloquea el acceso si no ha confirmado el correo
                 request.setAttribute("errorLogin", "Tu cuenta aún no está activada. Por favor, revisa tu correo electrónico para verificarla.");
                 request.getRequestDispatcher("index.jsp").forward(request, response);
             }
         } else {
-            // 3. Credenciales INCORRECTAS (No existe el usuario o la contraseña está mal)
             request.setAttribute("errorLogin", "Usuario o contraseña incorrectos.");
             request.getRequestDispatcher("index.jsp").forward(request, response);
         }
@@ -69,7 +74,7 @@ public class usuarioServlet extends HttpServlet {
     private void procesarRegistro(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         try {
-            // Captura de datos del formulario
+            // 1. CAPTURA Y SANITIZACIÓN DE DATOS
             String user = request.getParameter("regUser");
             String pass = request.getParameter("regPass");
             String tipo = request.getParameter("tipoUsuario");
@@ -77,53 +82,50 @@ public class usuarioServlet extends HttpServlet {
             String correo = request.getParameter("correo");
             String phoneNumber = request.getParameter("phone");
 
-            // Validación del teléfono
             if (phoneNumber == null || !phoneNumber.matches("\\d{10}")) {
                 request.setAttribute("error", "El número telefónico debe tener 10 dígitos numéricos.");
                 request.getRequestDispatcher("index.jsp").forward(request, response);
                 return;
             }
+
             String nom = request.getParameter("nom");
             String pat = request.getParameter("pat");
             String mat = request.getParameter("mat");
+
+            // 2. ADUANA DE SEGURIDAD SEP (Exclusivo Doctores)
             if ("DOCTOR".equals(tipo)) {
                 String cedulaInput = request.getParameter("cedula");
-
                 datos.DAO.sepDAO sDAO = new datos.DAO.sepDAO();
                 modelo.CedulaSEP cedulaValidada = sDAO.consultarCedulaOficial(cedulaInput);
 
-                // Filtro 1: ¿La cédula existe en la SEP?
+                // Filtro 2.1: Existencia de la cédula en el padrón
                 if (cedulaValidada == null) {
                     System.out.println("⚠️ SEGURIDAD: Intento de registro con cédula inexistente: " + cedulaInput);
                     response.sendRedirect("index.jsp?errorCedula=1");
                     return;
                 }
 
-                // Filtro 2: ¿La cédula le pertenece a quien se está registrando?
-                // Comparamos ignorando mayúsculas/minúsculas y quitando espacios extra
+                // Filtro 2.2: Prevención de Usurpación de Identidad (Match Biográfico)
                 boolean coincideNombre = cedulaValidada.getNombre().equalsIgnoreCase(nom.trim());
                 boolean coincidePaterno = cedulaValidada.getPaterno().equalsIgnoreCase(pat.trim());
 
-                // El apellido materno a veces es opcional, lo validamos de forma segura
                 boolean coincideMaterno = true;
                 if (cedulaValidada.getMaterno() != null && !cedulaValidada.getMaterno().trim().isEmpty()) {
                     String matInput = (mat != null) ? mat.trim() : "";
                     coincideMaterno = cedulaValidada.getMaterno().equalsIgnoreCase(matInput);
                 }
 
-                // Si al menos un dato no coincide, bloqueamos por usurpación de identidad
                 if (!coincideNombre || !coincidePaterno || !coincideMaterno) {
-                    System.out.println("🚨 ALERTA ROJA: Posible usurpación de identidad. Cédula " + cedulaInput +
-                            " pertenece a " + cedulaValidada.getNombre() + " pero fue usada por " + nom);
+                    System.out.println("🚨 ALERTA ROJA: Posible usurpación de identidad detectada.");
                     response.sendRedirect("index.jsp?errorIdentidad=1");
                     return;
                 }
             }
 
-            // 1. GENERAMOS EL TOKEN ANTES DE GUARDAR
+            // 3. GENERACIÓN DE TOKEN CRIPTOGRÁFICO
             String tokenGenerado = java.util.UUID.randomUUID().toString();
 
-            // 2. PREPARAMOS EL USUARIO
+            // 4. PERSISTENCIA DE ENTIDAD PRINCIPAL (Usuario)
             usuarioDAO uDAO = new usuarioDAO();
             Usuario nuevoUsuario = new Usuario();
             nuevoUsuario.setUsername(user);
@@ -133,35 +135,30 @@ public class usuarioServlet extends HttpServlet {
             nuevoUsuario.setTelefono(phoneNumber);
             nuevoUsuario.setTokenVerificacion(tokenGenerado);
 
-            // 3. INSERTAMOS EN LA BASE DE DATOS
             int idUsuarioCreado = uDAO.registrar(nuevoUsuario);
 
             if (idUsuarioCreado > 0) {
-                // 4. REGISTRAMOS LOS DETALLES SEGÚN EL ROL
+                // 5. DELEGACIÓN DE REGISTROS SECUNDARIOS SEGÚN POLIMORFISMO DE ROL
                 if ("DOCTOR".equals(tipo)) {
                     registrarDoctor(request, idUsuarioCreado);
                 } else {
                     registrarPaciente(request, idUsuarioCreado);
                 }
 
-                // 5. ENVIAMOS EL CORREO UNA SOLA VEZ
+                // 6. INTEGRACIÓN API EXTERNA (Resend)
                 boolean correoEnviado = EmailService.enviarCorreoVerificacion(correo, tokenGenerado);
 
                 if (correoEnviado) {
-                    // Éxito total: Mandamos al login con mensaje
                     request.setAttribute("mensaje", "Registro exitoso. Por favor revisa tu correo para activar tu cuenta.");
                     request.getRequestDispatcher("index.jsp").forward(request, response);
                 } else {
-                    // Se guardó en DB, pero falló el correo
-                    request.setAttribute("error", "Registro exitoso, pero hubo un problema al enviar el correo de verificación.");
+                    request.setAttribute("error", "Registro exitoso, pero hubo un problema al enviar el correo.");
                     request.getRequestDispatcher("index.jsp").forward(request, response);
                 }
             } else {
-                // Falló el insert en la DB
                 response.sendRedirect("index.jsp?errorRegistro=1");
             }
         } catch (Exception e) {
-            System.out.println("ERROR EN REGISTRO: " + e.getMessage());
             e.printStackTrace();
             response.sendRedirect("index.jsp?errorRegistro=1");
         }

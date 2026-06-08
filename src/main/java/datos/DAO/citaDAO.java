@@ -13,9 +13,14 @@ import java.util.List;
 import datos.conection;
 import modelo.Cita;
 
+/**
+ * Capa de Persistencia para la Gestión de Citas.
+ * Orquesta la lógica de negocio de calendarios, prevención de colisiones (concurrencia)
+ * y cruce de horarios laborales con citas activas.
+ */
 public class citaDAO {
 
-    // Método escudo: Devuelve TRUE si el horario está LIBRE, FALSE si está OCUPADO
+    // PREVENCIÓN DE CONCURRENCIA: Verifica que el "slot" de tiempo no haya sido tomado milisegundos antes
     public boolean verificarDisponibilidad(int idDoctor, Timestamp fechaHora) {
         String sql = "SELECT COUNT(*) FROM cita WHERE iddoctor = ? AND fechahora = ? AND estado != 'CANCELADA'";
 
@@ -28,18 +33,21 @@ public class citaDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     int conteo = rs.getInt(1);
-                    return conteo == 0; // Si es 0, no hay citas, está libre.
+                    return conteo == 0; // Libre si el count es exactamente 0
                 }
             }
         } catch (SQLException ex) {
             System.err.println("Error al verificar disponibilidad: " + ex.getMessage());
             ex.printStackTrace(System.out);
         }
-        return false; // Por seguridad, si hay error en la DB, decimos que no está disponible
+        return false; // Fail-Safe: Bloquea el horario ante fallos de conexión
     }
 
-    // Método para registrar la cita
+    /**
+     * Registra una cita aplicando la validación de estado previa.
+     */
     public boolean agendarCita(Cita nuevaCita) {
+        // 1. Interrogación del escudo de disponibilidad
         boolean estaLibre = verificarDisponibilidad(
                 nuevaCita.getIdDoctor(),
                 nuevaCita.getFechaHora()
@@ -50,7 +58,7 @@ public class citaDAO {
             return false;
         }
 
-        // 2. Si pasó el filtro, procedemos con el INSERT
+        // 2. Si la transacción es segura, inyecta la cita
         String sql = "INSERT INTO cita (idpaciente, iddoctor, fechahora, motivo, estado) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = conection.getConnection();
@@ -60,7 +68,7 @@ public class citaDAO {
             ps.setInt(2, nuevaCita.getIdDoctor());
             ps.setTimestamp(3, nuevaCita.getFechaHora());
             ps.setString(4, nuevaCita.getMotivo());
-            ps.setString(5, "PENDIENTE"); // Estado inicial por defecto
+            ps.setString(5, "PENDIENTE"); // Estado por defecto de la máquina de estados
 
             int filasAfectadas = ps.executeUpdate();
             return filasAfectadas > 0;
@@ -72,6 +80,10 @@ public class citaDAO {
         }
     }
 
+    /**
+     * Motor de Cálculo de Agendas: Cruza el horario base del médico contra las citas ya asignadas
+     * para devolver exclusivamente los "huecos" libres.
+     */
     public List<LocalTime> getHorariosDisponibles(int idDoctor, LocalDate fechaConsulta) {
         List<LocalTime> horariosDisponibles = new ArrayList<>();
         int diaSemanaJava = fechaConsulta.getDayOfWeek().getValue();
@@ -79,6 +91,7 @@ public class citaDAO {
         System.out.println("--- DEPURANDO: Doctor " + idDoctor + " Fecha " + fechaConsulta + " DíaSemana " + diaSemanaJava + " ---");
 
         try (Connection conn = conection.getConnection()) {
+            // FASE A: Extraer la plantilla base del horario laboral
             String sqlHorario = "SELECT horaentrada, horasalida FROM horariolaboral WHERE iddoctor = ? AND diasemana::integer = ?";
             try (PreparedStatement ps = conn.prepareStatement(sqlHorario)) {
                 ps.setInt(1, idDoctor);
@@ -89,6 +102,7 @@ public class citaDAO {
                         LocalTime salida = rs.getTime("horasalida").toLocalTime();
                         System.out.println("Horario laboral hallado: " + entrada + " a " + salida);
 
+                        // Generación paramétrica de fragmentos de 1 hora
                         LocalTime horaActual = entrada;
                         while (horaActual.isBefore(salida)) {
                             horariosDisponibles.add(horaActual);
@@ -100,7 +114,7 @@ public class citaDAO {
                 }
             }
 
-            // 2. Verificar citas ocupadas
+            // FASE B: Sustracción de horarios ya ocupados en la fecha solicitada
             String sqlCitas = "SELECT fechahora FROM cita WHERE iddoctor = ? AND DATE(fechahora) = ? AND estado != 'CANCELADA'";
             try (PreparedStatement psCitas = conn.prepareStatement(sqlCitas)) {
                 psCitas.setInt(1, idDoctor);
@@ -109,6 +123,7 @@ public class citaDAO {
                     while (rsCitas.next()) {
                         LocalTime horaOcupada = rsCitas.getTimestamp("fechahora").toLocalDateTime().toLocalTime();
                         System.out.println("Cita encontrada ocupada a las: " + horaOcupada);
+                        // Elimina el bloque si ya existe una coincidencia
                         horariosDisponibles.remove(horaOcupada);
                     }
                 }
@@ -120,8 +135,12 @@ public class citaDAO {
         return horariosDisponibles;
     }
 
+    /**
+     * DTO (Data Transfer Object) ensamblado mediante JOINs para poblar la tabla principal del Doctor.
+     */
     public List<modelo.Cita> obtenerCitasPorDoctor(int idDoctor) {
         List<modelo.Cita> lista = new ArrayList<>();
+        // INNER JOIN optimizado para cruzar el estado clínico con los datos demográficos del paciente
         String sql = "SELECT c.*, p.nombre AS nombre_paciente FROM cita c " +
                 "JOIN doctor d ON c.iddoctor = d.iddoctor " +
                 "JOIN paciente p ON c.idpaciente = p.idpaciente " +

@@ -6,7 +6,11 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Persistencia para la Entidad Paciente.
+ */
 public class pacienteDAO {
+    // Empaqueta los 3 atributos de la UI en la estructura compuesta (PersonaNombre) requerida por el esquema
     private static String sql = "INSERT INTO Paciente (curp, nombre, fechaNacimiento, idUsuario) VALUES (?, ROW(?, ?, ?), ?, ?)";
     private static String listado = "SELECT idPaciente, curp, (PersonaNombre).nombrePila, (PersonaNombre).paterno, (PersonaNombre).materno, fechaNacimiento FROM Paciente";
 
@@ -14,9 +18,12 @@ public class pacienteDAO {
         try(Connection conn = conection.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, p.getCurp());
+
+            // Inserción secuencial requerida por la macro ROW()
             ps.setString(2, p.getNombre());
             ps.setString(3, p.getPaterno());
             ps.setString(4, p.getMaterno());
+
             ps.setDate(5, p.getFechaNacimiento());
             ps.setInt(6, p.getIdUsuario());
 

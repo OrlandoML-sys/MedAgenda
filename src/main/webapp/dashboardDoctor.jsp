@@ -3,29 +3,29 @@
 <%@ page import="modelo.Cita" %>
 <%@ page import="datos.DAO.citaDAO" %>
 <%
-    // Recuperamos el objeto de la sesión
+    // CONTROL DE ACCESO: Protege la ruta verificando la sesión activa y el rol de Doctor
     modelo.Usuario usuarioLogueado = (modelo.Usuario) session.getAttribute("usuarioLogueado");
 
-    // Si no hay sesión iniciada, o si el rol NO es DOCTOR, lo pateamos de vuelta al login
     if (usuarioLogueado == null || !"DOCTOR".equals(usuarioLogueado.getRol())) {
         response.sendRedirect("index.jsp");
         return;
     }
 
-
-    // OBTENER LAS CITAS DEL DOCTOR
+    // CAPA DE PERSISTENCIA: Extrae las citas asociadas al identificador único del usuario médico
     citaDAO daoCita = new citaDAO();
     List<Cita> misCitas = daoCita.obtenerCitasPorDoctor(usuarioLogueado.getIdUsuario());
 
-    // NÚMEROS DINÁMICOS PARA LAS MÉTRICAS
+    // SIMULACIÓN DE MÉTRICAS: Generación aleatoria de KPIs de rendimiento comercial
     int totalCitas = misCitas.size();
     int vistasPerfil = (int) (Math.random() * 50) + 15;
     int clicsContacto = (int) (Math.random() * 10) + 2;
 
+    // CONTROL DE SEGURIDAD EN CACHÉ: Evita que el navegador almacene la vista protegida tras el cierre de sesión
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
     response.setDateHeader("Expires", 0);
 
+    // CONSULTA DIRECTA DE CONTROLADOR: Obtiene y sanitiza el nombre desestructurado del tipo compuesto
     String nombreDoctor = "Doctor Registrado";
     try (java.sql.Connection conn = datos.conection.getConnection();
          java.sql.PreparedStatement ps = conn.prepareStatement("SELECT nombre FROM doctor WHERE idusuario = ?")) {
@@ -56,50 +56,33 @@
 <div class="sidebar">
     <div class="logo-area">⚕️ MedAgenda</div>
     <a href="dashboardDoctor.jsp" class="menu-item active">Vista general</a>
-
     <a href="#seccion-agenda" class="menu-item">Mis Citas</a>
-
     <a href="pacientes.jsp" class="menu-item">Pacientes</a>
+    <a href="#" onclick="alert('Módulo de edición de perfil en construcción.'); return false;" class="menu-item">Editar perfil</a>
 
-    <a href="#" onclick="alert('Módulo de edición de perfil en construcción.'); return false;" class="menu-item">Editar
-        perfil</a>
+    <%-- Enlaces de relleno estructural para mantener el diseño simétrico --%>
+    <a href="#" class="menu-item"></a><a href="#" class="menu-item"></a><a href="#" class="menu-item"></a>
+    <a href="#" class="menu-item"></a><a href="#" class="menu-item"></a><a href="#" class="menu-item"></a>
+    <a href="#" class="menu-item"></a><a href="#" class="menu-item"></a><a href="#" class="menu-item"></a>
+    <a href="#" class="menu-item"></a><a href="#" class="menu-item"></a><a href="#" class="menu-item"></a>
+    <a href="#" class="menu-item"></a><a href="#" class="menu-item"></a><a href="#" class="menu-item"></a>
+    <a href="#" class="menu-item"></a><a href="#" class="menu-item"></a><a href="#" class="menu-item"></a>
+    <a href="#" class="menu-item"></a><a href="#" class="menu-item"></a><a href="#" class="menu-item"></a>
+    <a href="#" class="menu-item"></a><a href="#" class="menu-item"></a>
 
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-    <a href="#" class="menu-item"></a>
-
-    <a href="logoutServlet" class="menu-item text-danger fw-bold"><i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar
-        sesión</a>
+    <a href="logoutServlet" class="menu-item text-danger fw-bold"><i class="fa-solid fa-right-from-bracket me-2"></i>Cerrar sesión</a>
 </div>
 
 <div class="main-content">
 
+    <%-- Alerta de confirmación de registro clínico exitoso --%>
     <% if ("1".equals(request.getParameter("expedienteGuardado"))) { %>
     <div class="alerta-temporal" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #c3e6cb; transition: all 0.5s ease-in-out;">
         <strong>¡Éxito!</strong> El expediente clínico se guardó correctamente.
     </div>
     <% } %>
 
+    <%-- Alerta de procesamiento contable de caja exitoso --%>
     <% if ("1".equals(request.getParameter("pagoExitoso"))) { %>
     <div class="alerta-temporal" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #c3e6cb; transition: all 0.5s ease-in-out;">
         <strong>¡Pago registrado!</strong> La transacción se ha guardado correctamente.
@@ -111,27 +94,21 @@
         <a href="planes.jsp" class="btn-outline" style="text-decoration: none; display: inline-block; text-align: center;">Descubrir planes</a>
     </div>
 
-    <!-- SALUDO DINÁMICO -->
-    <h2>Hola, Dr(a). <%= nombreDoctor %>
-    </h2>
+    <h2>Hola, Dr(a). <%= nombreDoctor %></h2>
     <span class="subtitle">Algunas métricas y acciones recomendadas para ti</span>
 
     <div class="card-container">
-        <!-- Tarjeta 1 -->
         <div class="card highlight">
             <h3>Completar perfil</h3>
             <p>Mejora tu posición en MedAgenda agregando más información a tu perfil público.</p>
-
             <a href="editarPerfil.jsp" class="btn-outline"
                style="background: white; border: 1px solid #00796b; color: #00796b; padding: 8px 15px; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; text-align: center; font-size: 14px; font-weight: 500;">
                 Agregar información
             </a>
         </div>
 
-        <!-- Tarjeta 2 -->
         <div class="card">
-            <h3>Interés del paciente <span style="font-size: 12px; font-weight: normal; color: #999; float: right;">Últimos 30 días</span>
-            </h3>
+            <h3>Interés del paciente <span style="font-size: 12px; font-weight: normal; color: #999; float: right;">Últimos 30 días</span></h3>
             <div class="metric-row">
                 <span>👁️ Vistas al perfil</span>
                 <span class="metric-value"><%= vistasPerfil %></span>
@@ -147,7 +124,7 @@
         </div>
     </div>
 
-    <h3 id="seccion-agenda" tyle="margin-top: 40px; color: #333;">Mi Agenda</h3>
+    <h3 id="seccion-agenda" style="margin-top: 40px; color: #333;">Mi Agenda</h3>
     <div class="card" style="width: 100%; padding: 20px; overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
@@ -162,9 +139,7 @@
             <tbody>
             <% if (misCitas == null || misCitas.isEmpty()) { %>
             <tr>
-                <td colspan="5" style="padding: 20px; text-align: center; color: #999;">No tienes citas agendadas por el
-                    momento.
-                </td>
+                <td colspan="5" style="padding: 20px; text-align: center; color: #999;">No tienes citas agendadas por el momento.</td>
             </tr>
             <% } else {
                 for (Cita c : misCitas) { %>
@@ -172,13 +147,11 @@
                 <td style="padding: 12px 8px; font-weight: bold; color: #00796b;">
                     <i class="fa-solid fa-user me-2"></i> <%= c.getNombrePaciente() != null ? c.getNombrePaciente().replace("(", "").replace(")", "").replace(",", " ") : "Desconocido" %>
                 </td>
-                <td style="padding: 12px 8px;"><%= c.getFechaHora() != null ? c.getFechaHora().toString().substring(0, 16) : "Sin asignar" %>
-                </td>
-                <td style="padding: 12px 8px;"><%= c.getMotivo() %>
-                </td>
+                <td style="padding: 12px 8px;"><%= c.getFechaHora() != null ? c.getFechaHora().toString().substring(0, 16) : "Sin asignar" %></td>
+                <td style="padding: 12px 8px;"><%= c.getMotivo() %></td>
                 <td style="padding: 12px 8px;">
                     <%
-                        // Evaluamos dinámicamente el color según el estado real de la DB
+                        // Conmuta colores del badge según el estado contable de la cita
                         String estiloBadge = "background-color: #fff3cd; color: #856404;"; // Amarillo por defecto (PENDIENTE / REALIZADA)
                         if ("PAGADA".equals(c.getEstado())) {
                             estiloBadge = "background-color: #d4edda; color: #155724;"; // Verde éxito
@@ -187,8 +160,8 @@
                         }
                     %>
                     <span style="padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; <%= estiloBadge %>">
-        <%= c.getEstado() %>
-    </span>
+                        <%= c.getEstado() %>
+                    </span>
                 </td>
                 <td style="padding: 12px 8px; text-align: center;">
                     <a href="crearExpediente.jsp?idCita=<%= c.getIdCita() %>"
@@ -196,6 +169,7 @@
                         📝 Expediente
                     </a>
 
+                    <%-- Habilita el módulo de caja únicamente para citas completadas --%>
                     <% if ("REALIZADA".equals(c.getEstado())) { %>
                     <a href="registrarPago.jsp?idCita=<%= c.getIdCita() %>"
                        style="background-color: #28a745; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px;">
@@ -211,11 +185,14 @@
     </div>
 
 </div>
+
 <script>
+    //  Automatización del ciclo de vida de los banners de confirmación
     window.addEventListener('DOMContentLoaded', () => {
         const alertas = document.querySelectorAll('.alerta-temporal');
-
+        OPTIMIZACIÓN UX: A
         if (alertas.length > 0) {
+            // Desvanecimiento suave después de 4 segundos
             setTimeout(() => {
                 alertas.forEach(alerta => {
                     alerta.style.opacity = '0';
@@ -227,6 +204,7 @@
                 });
             }, 4000);
 
+            // Limpia la barra de direcciones para blindar el pool contra recargas accidentales (F5)
             if (window.history.replaceState) {
                 const urlLimpia = window.location.protocol + "//" + window.location.host + window.location.pathname;
                 window.history.replaceState({ path: urlLimpia }, '', urlLimpia);

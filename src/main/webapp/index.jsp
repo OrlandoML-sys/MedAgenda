@@ -13,10 +13,8 @@
 </head>
 <body>
 
-<!-- NAVBAR ESTILO DOCTORALIA -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-medagenda fixed-top">
     <div class="container">
-        <!-- Logo -->
         <a class="navbar-brand fw-bold" href="#">
             <span class="fs-4">⚕️ MedAgenda</span>
         </a>
@@ -26,7 +24,6 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav align-items-center">
                 <li class="nav-item">
-                    <!-- Botón que hace scroll suave a la sección inferior -->
                     <a class="nav-link text-white" href="#aboutUs">Acerca de nosotros</a>
                 </li>
                 <li class="nav-item ms-3">
@@ -36,18 +33,17 @@
                     <button class="btn btn-light text-medagenda fw-bold rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalRegistro">Crear cuenta</button>
                 </li>
             </ul>
-
         </div>
     </div>
 </nav>
 
-<!-- HERO SECTION (Sección principal) -->
 <section class="hero-section">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
                 <h1 class="display-4 fw-bold mb-3">Encuentra tu especialista y pide cita</h1>
                 <p class="lead mb-4">Miles de profesionales de la salud están aquí para ayudarte a ti y a tu familia.</p>
+
                 <form action="index.jsp" method="GET" class="bg-white p-2 rounded shadow-sm d-flex w-100">
                     <input type="text" name="q" class="form-control border-0"
                            placeholder="Especialidad o nombre del doctor..."
@@ -55,8 +51,8 @@
                     <button type="submit" class="btn btn-success bg-medagenda px-4">🔍 Buscar</button>
                 </form>
             </div>
-            <div class="col-lg-6 d-none d-lg-block position-relative" style="min-height: 400px;">
 
+            <div class="col-lg-6 d-none d-lg-block position-relative" style="min-height: 400px;">
                 <div class="card shadow-lg p-4 border-0 position-absolute floating-card"
                      style="width: 380px; border-radius: 16px; top: 15px; left: 215px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); z-index: 2;">
                     <div class="d-flex align-items-center mb-3">
@@ -70,12 +66,10 @@
                         </div>
                         <span class="badge ms-auto bg-success" style="background-color: #2ecc71 !important; font-size: 11px;">🟢 Disponible</span>
                     </div>
-
                     <div class="p-2 rounded mb-3 text-start" style="background-color: #f8f9fa; font-size: 13px; border-left: 3px solid #00796b;">
                         <span class="text-muted d-block small">Última consulta realizada:</span>
                         <strong class="text-dark">"Tratamiento de acné juvenil avanzado"</strong>
                     </div>
-
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="text-muted font-monospace small">🛡️ Cédula: 20000004</span>
                         <div class="text-warning small">⭐⭐⭐⭐⭐ <span class="text-muted">(48)</span></div>
@@ -102,20 +96,20 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </section>
 
 <%
+    // Intercepta el parámetro de búsqueda y ejecuta la consulta JDBC
     String queryBusqueda = request.getParameter("q");
     if (queryBusqueda != null && !queryBusqueda.trim().isEmpty()) {
         doctorDAO daoDoc = new doctorDAO();
         List<Doctor> resultadosPublicos = daoDoc.buscarDoctores(queryBusqueda.trim(), "");
 %>
 <section class="container my-5" style="max-width: 900px;">
-    <h3 class="text-medagenda fw-bold mb-4">🩺 Especialistas encontrados para: <span class="text-dark">"<%= queryBusqueda %>"</span></h3>
+    <h3 class="text-medagenda fw-bold mb-4">Nordic🩺 Especialistas encontrados para: <span class="text-dark">"<%= queryBusqueda %>"</span></h3>
 
     <% if (resultadosPublicos.isEmpty()) { %>
     <div class="alert alert-warning text-center border-0 shadow-sm">
@@ -127,6 +121,7 @@
     <div class="doctor-card p-4 mb-3" style="background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; border-left: 5px solid #00796b; display: flex; justify-content: space-between; align-items: center;">
         <div class="text-start">
             <h4 style="margin: 0; color: #00796b; font-weight: bold; font-size: 18px;">
+                <%-- Sanitización del tipo compuesto para presentación en interfaz --%>
                 Dr(a). <%= doc.getNombre() != null ? doc.getNombre().replaceAll("[\"(),]", " ").trim() : "Especialista" %>
             </h4>
             <p style="margin: 5px 0 0 0; color: #4a5568; font-weight: bold; font-size: 14px;">
@@ -138,6 +133,7 @@
         </div>
 
         <div>
+            <%-- Si es Paciente con sesión va directo a agendar; si no, fuerza el login modal --%>
             <% if (session.getAttribute("usuarioLogueado") != null && "PACIENTE".equals(((modelo.Usuario)session.getAttribute("usuarioLogueado")).getRol())) { %>
             <a href="agendar.jsp?idDoctor=<%= doc.getIdDoctor() %>" class="btn btn-success bg-medagenda fw-bold px-4 py-2 rounded-pill text-white" style="text-decoration: none;">
                 📅 Pedir Cita
@@ -156,7 +152,6 @@
 </section>
 <% } %>
 
-<!-- SECCIÓN ACERCA DE NOSOTROS (About Us) -->
 <section id="aboutUs" class="py-5 bg-light" style="min-height: 60vh;">
     <div class="container mt-5">
         <h2 class="text-center text-medagenda fw-bold mb-4">Acerca de MedAgenda</h2>
@@ -204,7 +199,6 @@
     </div>
 </div>
 
-<!-- MODAL DE REGISTRO CON VALIDACIÓN (needs-validation) -->
 <div class="modal fade" id="modalRegistro" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -238,7 +232,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="row">
@@ -246,10 +239,10 @@
                         <div class="col-md-4 mb-3"><input type="text" name="pat" class="form-control" placeholder="A. Paterno" required></div>
                         <div class="col-md-4 mb-3"><input type="text" name="mat" class="form-control" placeholder="A. Materno"></div>
                     </div>
+
                     <fieldset class="phone-section">
                         <legend class="label">Número de teléfono móvil</legend>
                         <p class="hint">Necesitamos tu teléfono para configurar tu cuenta. No se mostrará en tu perfil.</p>
-
                         <div class="phone-input-container">
                             <select name="countryCode" class="prefix-select">
                                 <option value="+52" selected>🇲🇽 +52</option>
@@ -258,17 +251,10 @@
                                 <option value="+54">🇦🇷 +54</option>
                                 <option value="+57">🇨🇴 +57</option>
                             </select>
-
-                            <input type="tel"
-                                   name="phone"
-                                   id="phone"
-                                   pattern="[0-9]{10}"
-                                   title="Por favor, introduce 10 dígitos numéricos"
-                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                   required
-                                   class="phone-field">
+                            <input type="tel" name="phone" id="phone" pattern="[0-9]{10}" title="Por favor, introduce 10 dígitos" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required class="phone-field">
                         </div>
                     </fieldset>
+
                     <div id="camposPaciente" style="display:block;" class="border-top pt-3 mt-2">
                         <h6>Información del Paciente</h6>
                         <div class="row">
@@ -277,13 +263,12 @@
                         </div>
                     </div>
 
-
                     <div id="camposDoctor" style="display:none;" class="border-top pt-3 mt-2">
                         <h6>Información Profesional</h6>
                         <div class="row">
                             <div class="col-md-12"><input type="text" name="cedula" class="form-control" placeholder="Número de Cédula Profesional" maxlength="8"></div>
                             <div class="col-md-12">
-                            <label class="form-label small">Especialidad</label>
+                                <label class="form-label small">Especialidad</label>
                                 <select name="especialidad" class="form-select">
                                     <option value="1">Médico General</option>
                                     <option value="2">Pediatría</option>
@@ -310,30 +295,29 @@
     </div>
 </div>
 
-<!-- CONTENEDOR DEL TOAST DE FEEDBACK -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 2000;">
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 2000; margin-top: 70px;">
     <% if("1".equals(request.getParameter("registroExitoso"))) { %>
-    <div id="toastExito" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="toastExito" class="toast align-items-center text-bg-success border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
-            <div class="toast-body">¡Cuenta creada exitosamente! Revisa tu correo.</div>
+            <div class="toast-body fs-6">¡Cuenta creada exitosamente! Revisa tu correo.</div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     </div>
     <% } %>
 
     <% if("1".equals(request.getParameter("errorRegistro"))) { %>
-    <div id="toastError" class="toast align-items-center text-bg-danger border-0" role="alert">
+    <div id="toastError" class="toast align-items-center text-bg-danger border-0 shadow-lg" role="alert">
         <div class="d-flex">
-            <div class="toast-body">Hubo un problema técnico al crear tu cuenta. Intenta de nuevo.</div>
+            <div class="toast-body fs-6">Hubo un problem técnico al crear tu cuenta. Intenta de nuevo.</div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     </div>
     <% } %>
 
     <% if("1".equals(request.getParameter("errorCedula"))) { %>
-    <div id="toastCedula" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="6000">
+    <div id="toastCedula" class="toast align-items-center text-bg-danger border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="6000">
         <div class="d-flex">
-            <div class="toast-body fw-bold">
+            <div class="toast-body fw-bold fs-6">
                 🚫 Registro Denegado: La Cédula Profesional ingresada no es válida o no existe en el Registro Nacional de Profesionistas (SEP).
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
@@ -342,9 +326,9 @@
     <% } %>
 
     <% if("1".equals(request.getParameter("errorIdentidad"))) { %>
-    <div id="toastIdentidad" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="7000">
+    <div id="toastIdentidad" class="toast align-items-center text-bg-danger border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="7000">
         <div class="d-flex">
-            <div class="toast-body fw-bold">
+            <div class="toast-body fw-bold fs-6">
                 🚨 Protección de Identidad: La Cédula Profesional ingresada es válida, pero NO coincide con tu nombre y apellidos. El registro ha sido bloqueado.
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
@@ -355,7 +339,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Pequeño script para mostrar/ocultar campos según el tipo de usuario
+    // MANIPULACIÓN DINÁMICA DOM: Commuta la visibilidad y requerimientos de validación según el rol
     function toggleCampos() {
         const tipo = document.getElementById("selectTipo").value;
         const divPaciente = document.getElementById("camposPaciente");
@@ -366,16 +350,12 @@
         if (tipo === "DOCTOR") {
             divDoctor.style.display = "block";
             divPaciente.style.display = "none";
-
-            // Doctor: Cédula obligatoria, Paciente opcional
             inputCedula.required = true;
             inputCurp.required = false;
             inputFecNam.required = false;
         } else {
             divDoctor.style.display = "none";
             divPaciente.style.display = "block";
-
-            // Paciente: CURP y Fecha obligatorios, Doctor opcional
             inputCedula.required = false;
             inputCurp.required = true;
             inputFecNam.required = true;
@@ -394,7 +374,7 @@
         }
     }
 
-    // 1. Script para las validaciones de Bootstrap
+    // VALIDACIÓN INTEGRAL FRONTEND: Intercepta el submit si las restricciones nativas de Bootstrap fallan
     (() => {
         'use strict'
         const forms = document.querySelectorAll('.needs-validation')
@@ -409,39 +389,33 @@
         })
     })()
 
-    // 2. Script Inteligente para disparar los Toasts y reabrir modales si hay error
+    // Dispara Toasts y reabre modales de forma inteligente ante fallos de aduana
     window.onload = (event) => {
-        // Toast de Éxito
         const toastExito = document.getElementById('toastExito');
         if (toastExito) { new bootstrap.Toast(toastExito).show(); }
 
-        // Toast Error Técnico
         const toastError = document.getElementById('toastError');
         if (toastError) { new bootstrap.Toast(toastError).show(); }
 
-        // Toast de Seguridad (Cédula Falsa)
         const toastCedula = document.getElementById('toastCedula');
         if (toastCedula) {
             new bootstrap.Toast(toastCedula).show();
-
-            // Si hubo error de cédula, le reabrimos el modal en automático para que vea el fallo
-            const modalRegistro = new bootstrap.Modal(document.getElementById('modalRegistro'));
-            modalRegistro.show();
-            document.getElementById('selectTipo').value = 'DOCTOR';
-            toggleCampos(); // Forzamos mostrar los campos de doctor
-        }
-
-        // Toast de Seguridad (Usurpación de Identidad)
-        const toastIdentidad = document.getElementById('toastIdentidad');
-        if (toastIdentidad) {
-            new bootstrap.Toast(toastIdentidad).show();
-
             const modalRegistro = new bootstrap.Modal(document.getElementById('modalRegistro'));
             modalRegistro.show();
             document.getElementById('selectTipo').value = 'DOCTOR';
             toggleCampos();
         }
 
+        const toastIdentidad = document.getElementById('toastIdentidad');
+        if (toastIdentidad) {
+            new bootstrap.Toast(toastIdentidad).show();
+            const modalRegistro = new bootstrap.Modal(document.getElementById('modalRegistro'));
+            modalRegistro.show();
+            document.getElementById('selectTipo').value = 'DOCTOR';
+            toggleCampos();
+        }
+
+        // Modifica de manera asíncrona el historial para mitigar re-inserciones por F5
         if (window.history.replaceState) {
             const urlLimpia = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.replaceState({ path: urlLimpia }, '', urlLimpia);

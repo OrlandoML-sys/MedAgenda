@@ -3,12 +3,14 @@
 <%@ page import="modelo.HistorialClinico" %>
 <%@ page import="datos.DAO.historialDAO" %>
 <%
+    // Restringe la vista únicamente a usuarios autenticados con el rol de DOCTOR
     modelo.Usuario uLogueado = (modelo.Usuario) session.getAttribute("usuarioLogueado");
     if (uLogueado == null || !"DOCTOR".equals(uLogueado.getRol())) {
         response.sendRedirect("index.jsp");
         return;
     }
 
+    // Extrae el histórico unificado de consultas ligadas al médico logueado
     int idUsuario = uLogueado.getIdUsuario();
     historialDAO hDAO = new historialDAO();
     List<HistorialClinico> historiales = hDAO.obtenerHistorialPorUsuario(idUsuario);
@@ -29,6 +31,7 @@
         <a href="dashboardDoctor.jsp" class="btn btn-outline-secondary">Volver al Dashboard</a>
     </div>
 
+    <%-- Valida si la colección devuelta por el DAO contiene elementos --%>
     <% if (historiales.isEmpty()) { %>
     <div class="alert alert-info text-center py-4">
         Aún no tienes consultas en tu registro.
@@ -37,8 +40,10 @@
     <div class="accordion shadow-sm" id="accordionHistorial">
         <%
             int contador = 0;
+            // Mapea cada consulta en un nodo colapsable único
             for (HistorialClinico h : historiales) {
                 contador++;
+                // Generación de identificadores alfanuméricos únicos para el control del DOM
                 String collapseId = "collapse" + contador;
                 String headingId = "heading" + contador;
         %>
@@ -51,6 +56,8 @@
                     </div>
                 </button>
             </h2>
+
+            <%-- Vinculado al padre mediante data-bs-parent para colapsado automático --%>
             <div id="<%= collapseId %>" class="accordion-collapse collapse" data-bs-parent="#accordionHistorial">
                 <div class="accordion-body bg-white p-4">
                     <div class="mb-3">
@@ -69,6 +76,7 @@
                             <p class="text-warning small fst-italic">Expediente aún no llenado por el médico.</p>
                             <% } %>
                         </div>
+
                         <div class="col-md-6 ps-4">
                             <h6 class="text-primary fw-bold"><i class="fa-solid fa-pills me-1"></i> Receta / Tratamiento</h6>
                             <% if (h.getReceta() != null) { %>

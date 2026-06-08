@@ -10,19 +10,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Persistencia de Datos Clínicos e Historiales.
+ */
 public class expedienteDAO {
+    // Casteo explícito ?::jsonb para forzar el mapeo del motor PostgreSQL a formato documental
     private static final String SQL_INSERT = "INSERT INTO expediente (idCita, diagnostico, tratamiento, notasJSON) VALUES (?, ?, ?, ?::jsonb)";
     private static final String SQL_LISTADO = "SELECT * FROM expediente WHERE idCita = ?";
 
     public boolean guardarExpediente(Expediente exp) {
         try (Connection conn = conection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(SQL_INSERT)) {
+             PreparedStatement ps = conn.prepareStatement(SQL_INSERT)) {
             ps.setInt(1, exp.getIdCita());
             ps.setString(2, exp.getDiagnostico());
             ps.setString(3, exp.getTratamiento());
 
+            // Validación de integridad para el árbol JSON
             if (exp.getNotasJSON() == null || exp.getNotasJSON().isEmpty()) {
-                ps.setString(4, "{}");
+                ps.setString(4, "{}"); // Objeto JSON vacío de seguridad
             } else {
                 ps.setString(4, exp.getNotasJSON());
             }
@@ -31,7 +36,7 @@ public class expedienteDAO {
             return filasAfectadas > 0;
         } catch (SQLException ex) {
             System.err.println("Error al guardar expediente: " + ex.getMessage());
-            ex.printStackTrace(System.out);
+            ex.printStackTrace();
             return false;
         }
     }
@@ -39,6 +44,7 @@ public class expedienteDAO {
     public List<modelo.Expediente> obtenerExpedientesPorPaciente(int idPaciente) {
         List<modelo.Expediente> lista = new ArrayList<>();
 
+        // Vincula el expediente físico con la cita y los datos del emisor (Doctor)
         String sql = "SELECT e.idexpediente, e.idcita, e.diagnostico, e.tratamiento, e.notasjson, " +
                 "       c.fechahora, d.nombre AS nombre_doctor " +
                 "FROM expediente e " +

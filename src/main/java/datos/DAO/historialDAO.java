@@ -8,11 +8,15 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Capa de Lectura (Read-Only) para reportes de desempeño clínico y seguimiento de pacientes.
+ */
 public class historialDAO {
 
     public List<HistorialClinico> obtenerHistorialPorUsuario(int idUsuario) {
         List<HistorialClinico> lista = new ArrayList<>();
 
+        // La sintaxis (p.nombre).nombrepila extrae un atributo específico del tipo estructurado en PGSQL
         String sql = "SELECT (p.nombre).nombrepila AS nombre_p, (p.nombre).paterno AS pat_p, " +
                 "c.fechahora AS fecha, c.motivo, e.diagnostico, e.tratamiento " +
                 "FROM cita c " +
@@ -29,6 +33,7 @@ public class historialDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     HistorialClinico h = new HistorialClinico();
+                    // Concatenación a nivel de vista lógica
                     h.setNombrePaciente(rs.getString("nombre_p") + " " + rs.getString("pat_p"));
                     h.setFechaCita(rs.getString("fecha"));
                     h.setMotivoCita(rs.getString("motivo"));

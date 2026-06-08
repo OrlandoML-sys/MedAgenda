@@ -10,6 +10,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 
+/**
+ * Controlador de Transacciones Financieras.
+ * Registra ingresos en caja y actualiza la máquina de estados de las citas.
+ */
 @WebServlet("/pagoServlet")
 public class pagoServlet extends HttpServlet{
 
@@ -17,6 +21,7 @@ public class pagoServlet extends HttpServlet{
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // 1. MAPEO DE DATOS A ENTIDAD
         int idCita = Integer.parseInt(request.getParameter("idCita"));
         double monto = Double.parseDouble(request.getParameter("monto"));
         String metodoPago = request.getParameter("metodoPago");
@@ -26,10 +31,12 @@ public class pagoServlet extends HttpServlet{
         pago.setMonto(monto);
         pago.setMetodoPago(metodoPago);
 
+        // 2. INSERCIÓN EN TABLA PAGOS
         pagoDAO pDAo = new pagoDAO();
         boolean pagado = pDAo.registrarPago(pago);
 
         if (pagado) {
+            // 3. ACTUALIZACIÓN DE ESTADO LÓGICO EN CASCADA
             String sqlUpdate = "UPDATE cita SET estado = 'PAGADA' WHERE idcita = ?";
             try (Connection conn = conection.getConnection();
                  PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
@@ -39,10 +46,9 @@ public class pagoServlet extends HttpServlet{
                 e.printStackTrace();
             }
 
-            // Redirigimos una sola vez indicando que fue exitoso
+            // Previene duplicidad de pagos al refrescar página
             response.sendRedirect("dashboardDoctor.jsp?pagoExitoso=1");
         } else {
-            // Si falla el pago, lo regresamos al formulario
             response.sendRedirect("registrarPago.jsp?idCita=" + idCita + "&error=1");
         }
     }

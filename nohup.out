@@ -1,0 +1,2 @@
+
+(org.gnome.Evince:117176): Handy-WARNING **: 14:34:20.126: Using GtkSettings:gtk-application-prefer-dark-theme together with HdyStyleManager is unsupported. Please use HdyStyleManager:color-scheme instead.

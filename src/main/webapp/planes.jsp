@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
+    // CONTROL DE ACCESO: Protege la ruta verificando la sesión activa y restringiendo al rol Doctor
     modelo.Usuario usuarioLogueado = (modelo.Usuario) session.getAttribute("usuarioLogueado");
     if (usuarioLogueado == null || !"DOCTOR".equals(usuarioLogueado.getRol())) {
         response.sendRedirect("index.jsp");
@@ -18,6 +19,7 @@
 <body>
 
 <div class="container py-5">
+    <%-- Presentación de la estrategia de monetización Freemium detallada en el reporte --%>
     <div class="text-center mb-5">
         <h1 class="display-5 fw-bold text-medagenda">Modelo Freemium</h1>
         <p class="lead text-muted max-width-600 mx-auto" style="font-size: 16px;">
@@ -72,6 +74,7 @@
                     </ul>
                 </div>
                 <div class="d-grid mt-4">
+                    <%-- Mensaje controlado que delimita el alcance de la fase de desarrollo actual --%>
                     <button onclick="alert('Módulo de pasarela de pago (Stripe/PayPal) en desarrollo comercial.')" class="btn bg-medagenda text-white fw-bold shadow-sm">
                         Contratar Plan Profesional
                     </button>

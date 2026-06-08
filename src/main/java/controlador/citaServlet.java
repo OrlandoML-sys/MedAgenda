@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+/**
+ * Controlador del Módulo de Agendamiento.
+ * Transforma peticiones de fecha/hora plana en objetos Timestamp relacionales.
+ */
 @WebServlet("/CitaServlet")
 public class citaServlet extends HttpServlet {
 
@@ -16,7 +20,7 @@ public class citaServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        // 1. Obtener el paciente de la sesión (Seguridad)
+        // 1. Extrae el ID del paciente directamente del servidor
         HttpSession session = request.getSession();
         Usuario paciente = (Usuario) session.getAttribute("usuarioLogueado");
 
@@ -25,24 +29,25 @@ public class citaServlet extends HttpServlet {
             return;
         }
 
-        // 2. Obtener datos del formulario
+        // 2. EXTRACCIÓN DE DATOS DE LA VISTA
         String idDoctorStr = request.getParameter("idDoctor");
         String fechaStr = request.getParameter("fechaSeleccionada");
         String horaStr = request.getParameter("horaSeleccionada");
-        LocalDateTime ldt = LocalDateTime.parse(fechaStr + "T" + horaStr);
-        Timestamp timestampFinal = Timestamp.valueOf(ldt);
         String motivo = request.getParameter("motivo");
 
-        try {
+        // CONVERSIÓN DE TIEMPO: Une las cadenas separadas y parsea al formato admitido por JDBC
+        LocalDateTime ldt = LocalDateTime.parse(fechaStr + "T" + horaStr);
+        Timestamp timestampFinal = Timestamp.valueOf(ldt);
 
-            // 3. Crear objeto Cita
+        try {
+            // 3. MAPEO ORM MANUAL
             Cita nuevaCita = new Cita();
             nuevaCita.setIdPaciente(paciente.getIdUsuario());
             nuevaCita.setIdDoctor(Integer.parseInt(idDoctorStr));
             nuevaCita.setFechaHora(timestampFinal);
             nuevaCita.setMotivo(motivo);
 
-            // 4. Llamar al DAO
+            // 4. TRANSACCIÓN DE PERSISTENCIA
             citaDAO cDAO = new citaDAO();
             boolean registrada = cDAO.agendarCita(nuevaCita);
 
@@ -50,6 +55,7 @@ public class citaServlet extends HttpServlet {
                 request.setAttribute("mensaje", "¡Cita agendada con éxito!");
                 response.sendRedirect("dashboardPaciente.jsp?citaAgendada=1");
             } else {
+                // FALLO POR CONCURRENCIA: Si dos pacientes eligen la misma hora exacta
                 request.setAttribute("error", "El horario ya está ocupado. Intenta con otro.");
                 response.sendRedirect("agendar.jsp?idDoctor=" + idDoctorStr + "&error=1");
             }

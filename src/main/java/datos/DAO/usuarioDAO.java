@@ -8,25 +8,30 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Persistencia del Sistema de Autenticación y Autorización.
+ */
 public class usuarioDAO {
+    // La cláusula 'RETURNING idUsuario' en PostgreSQL reemplaza al Statement.RETURN_GENERATED_KEYS de Java nativo
     private static final String SQL_INSERT = "INSERT INTO Usuario (username, rol, estaActivo, email, password, telefono, token_verificacion) VALUES (?, ?, ?::boolean, ?, ?, ?, ?) RETURNING idUsuario";
     private static final String SQL_LOGIN = "SELECT * FROM Usuario WHERE username = ? AND password = ?";
 
     public int registrar(Usuario user) {
         int idGenerado = 0;
         try (Connection conn = conection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(SQL_INSERT)){
+             PreparedStatement ps = conn.prepareStatement(SQL_INSERT)){
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getRol());
-            ps.setBoolean(3, false);
+            ps.setBoolean(3, false); // Las cuentas inician inactivas hasta su verificación
             ps.setString(4, user.getEmail());
-            ps.setString(5, user.getPassword());
+            ps.setString(5, user.getPassword()); // Hash protegido que viene del Servlet
             ps.setString(6, user.getTelefono());
             ps.setString(7, user.getTokenVerificacion());
 
+            // Dado que PostgreSQL usa RETURNING, se ejecuta como Query para capturar el valor de retorno
             try(ResultSet rs = ps.executeQuery()) {
                 if(rs.next()) {
-                    idGenerado = rs.getInt(1);
+                    idGenerado = rs.getInt(1); // Retorna la PK generada automáticamente (SERIAL)
                 }
             }
 
@@ -40,7 +45,7 @@ public class usuarioDAO {
         Usuario us = null;
 
         try (Connection conn = conection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(SQL_LOGIN)) {
+             PreparedStatement ps = conn.prepareStatement(SQL_LOGIN)) {
             ps.setString(1, user);
             ps.setString(2, pass);
             try (ResultSet rs = ps.executeQuery()) {
@@ -61,8 +66,11 @@ public class usuarioDAO {
         return us;
     }
 
+    /**
+     * Motor de Activación de Cuentas: Consume el token enviado al correo electrónico.
+     */
     public boolean verificarCuenta(String token) {
-        // Cambiamos a true y borramos el token en un solo paso
+        // Activa el perfil y quema el token simultáneamente por seguridad
         String sql = "UPDATE usuario SET estaactivo = true, token_verificacion = NULL WHERE token_verificacion = ?";
 
         try (Connection con = conection.getConnection();
@@ -71,7 +79,6 @@ public class usuarioDAO {
             ps.setString(1, token);
 
             int filasAfectadas = ps.executeUpdate();
-            // Si afectó al menos 1 fila, significa que encontró el token y actualizó la cuenta
             return filasAfectadas > 0;
 
         } catch (SQLException e) {

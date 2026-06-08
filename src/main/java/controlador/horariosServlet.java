@@ -7,10 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
 
+/**
+ * Endpoint API Asíncrono (JSON).
+ * Interrogado vía Fetch desde el front-end para devolver los horarios no ocupados.
+ */
 @WebServlet("/HorariosServlet")
 public class horariosServlet extends HttpServlet {
 
@@ -18,16 +19,14 @@ public class horariosServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        System.out.println("====== LLEGÓ UNA PETICIÓN A HORARIOS SERVLET ======");
-        System.out.println("Param idDoctor recibido: " + request.getParameter("idDoctor"));
-        System.out.println("Param fecha recibida: " + request.getParameter("fecha"));
-
+        // Configuración de cabeceras para RESTful API
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         String idDoctorStr = request.getParameter("idDoctor");
         String fechaStr = request.getParameter("fecha");
 
+        // VALIDACIÓN: Evita excepciones si la petición llega incompleta
         if (idDoctorStr == null || idDoctorStr.isEmpty() || fechaStr == null || fechaStr.isEmpty()) {
             response.getWriter().write("[]");
             return;
@@ -37,9 +36,11 @@ public class horariosServlet extends HttpServlet {
             int idDoctor = Integer.parseInt(idDoctorStr);
             java.time.LocalDate fecha = java.time.LocalDate.parse(fechaStr);
 
+            // CÁLCULO DE DISPONIBILIDAD: Cruza HorarioLaboral vs CitasRegistradas
             datos.DAO.citaDAO cDAO = new datos.DAO.citaDAO();
             java.util.List<java.time.LocalTime> horariosLibres = cDAO.getHorariosDisponibles(idDoctor, fecha);
 
+            // SERIALIZACIÓN JSON: Construye un array de strings compatible con JavaScript
             StringBuilder json = new StringBuilder("[");
             for (int i = 0; i < horariosLibres.size(); i++) {
                 json.append("\"").append(horariosLibres.get(i).toString()).append("\"");
@@ -53,7 +54,7 @@ public class horariosServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.getWriter().write("[]");
+            response.getWriter().write("[]"); // Respuesta fallback en caso de error
         }
     }
 }

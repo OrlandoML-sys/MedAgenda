@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%><
-<html lang="es">>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>MedAgenda - Registrar Pago</title>
@@ -14,14 +14,19 @@
                     <h4 class="mb-0">Registrar Pago de Consulta</h4>
                 </div>
                 <div class="card-body p-4">
+                    <%-- Despacha la transacción contable a pagoServlet vía POST --%>
                     <form action="pagoServlet" method="POST">
+
+                        <%-- Vincula de forma oculta la factura con el ID de la cita --%>
                         <input type="hidden" name="idCita" value="<%= request.getParameter("idCita") %>">
 
+                        <%-- Mapea el número decimal al tipo NUMERIC(10,2) de PostgreSQL --%>
                         <div class="mb-3">
                             <label class="form-label">Monto a cobrar ($)</label>
                             <input type="number" step="0.01" name="monto" class="form-control" required placeholder="0.00">
                         </div>
 
+                        <%-- Clasifica el flujo contable bajo restricciones CHECK en la base de datos --%>
                         <div class="mb-3">
                             <label class="form-label">Método de Pago</label>
                             <select name="metodoPago" class="form-select">
@@ -31,8 +36,10 @@
                             </select>
                         </div>
 
+                        <%-- Confirmación y retorno al dashboard --%>
                         <div class="d-grid mt-4">
                             <button type="submit" class="btn btn-success">Confirmar Pago</button>
+                            <%-- Cancela la operación sin mutar el estado relacional --%>
                             <a href="dashboardDoctor.jsp" class="btn btn-link mt-2">Cancelar</a>
                         </div>
                     </form>

@@ -1,5 +1,8 @@
+/* MANUAL OVERRIDE (BOOTSTRAP): Forzado de estilos para unificar la paleta oscura de expedientes */
 .bg-medagenda { background-color: #005a52 !important; }
 .text-medagenda { color: #005a52 !important; }
 .border-medagenda { border-color: #005a52 !important; }
+
+/* BOTONES CLÍNICOS: Controles de almacenamiento con degradados controlados por hover */
 .btn-medagenda { background-color: #005a52; color: white; }
 .btn-medagenda:hover { background-color: #00423c; color: white; }

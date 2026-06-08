@@ -1,24 +1,38 @@
-/*Dashboard Paciente*/
+/* CONFIGURACIÓN BASE PANEL PACIENTES */
 body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; }
 .navbar { padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 .logo { font-size: 24px; font-weight: bold; color: #00796b; text-decoration: none; }
+
+/* JUMBOTRON / HERO: Sección de búsqueda principal con alineación centrada */
 .hero { background-color: #00796b; color: white; padding: 80px 20px; text-align: center; }
 .hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
 .hero p { font-size: 1.2rem; margin-bottom: 40px; opacity: 0.9; }
+
+/* BARRA DE BÚSQUEDA CAPSULAR (INLINE-FLEX) */
 .search-box { background: white; padding: 10px; border-radius: 30px; display: inline-flex; gap: 10px; width: 100%; max-width: 800px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 .search-input { flex: 1; border: none; padding: 15px 20px; border-radius: 20px; font-size: 16px; outline: none; background: #f9f9f9;}
 .btn-search { background-color: #009688; color: white; border: none; padding: 15px 30px; border-radius: 20px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.3s; }
 .btn-search:hover { background-color: #00796b; }
+
+/* COMPONENTES COMPLEMENTARIOS DE NAVEGACIÓN Y TARJETAS */
 .categories { padding: 40px; text-align: center; }
 .category-tag { display: inline-block; background: white; padding: 10px 20px; border-radius: 20px; margin: 5px; color: #333; text-decoration: none; border: 1px solid #ddd; }
-.doctor-card {background: white;max-width: 600px;margin: 30px auto;padding: 20px;border-radius: 12px;box-shadow: 0 2px 8px rgba(0,0,0,0.05);border: 1px solid #eee;display: flex;justify-content: space-between;align-items: center;}
+.doctor-card { background: white; max-width: 600px; margin: 30px auto; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
 .doctor-info h3 { margin: 0 0 5px 0; color: #333; }
 .doctor-info p { margin: 0; color: #666; font-size: 14px; }
-.btn-agendar {background-color: #009688;color: white;text-decoration: none;padding: 12px 20px;border-radius: 8px;font-weight: bold;transition: background 0.3s;}
+.btn-agendar { background-color: #009688; color: white; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; transition: background 0.3s; }
 .btn-agendar:hover { background-color: #00796b; }
-.dropdown-cuenta {position: relative !important;display: inline-block !important;}
-.dropdown-trigger {cursor: pointer !important;padding: 8px 16px !important;font-weight: bold !important;color: #333333 !important;font-size: 14px !important;transition: background 0.2s ease-in-out;}
-.dropdown-cuenta .dropdown-menu-content {display: none !important;position: absolute !important;top: 100% !important;right: 0 !important;background-color: #ffffff !important;min-width: 150px !important;box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15) !important;border-radius: 6px !important;z-index: 9999 !important;border: 1px solid #e2e8f0 !important;padding: 5px 0 !important;margin-top: 5px !important;}
-.dropdown-cuenta:hover .dropdown-menu-content {display: block !important;}
-.dropdown-item-logout {color: #e74c3c !important;padding: 10px 15px !important;text-decoration: none !important;display: block !important;font-weight: bold !important;font-size: 13px !important;text-align: left !important;transition: background 0.2s;}
-.dropdown-item-logout:hover {background-color: #f8d7da !important;color: #c0392b !important;}
+
+/* MENÚ DESPLEGABLE DE CUENTA (DROPDOWN COMPORTAMIENTO NATIVO) */
+.dropdown-cuenta { position: relative !important; display: inline-block !important; }
+.dropdown-trigger { cursor: pointer !important; padding: 8px 16px !important; font-weight: bold !important; color: #333333 !important; font-size: 14px !important; transition: background 0.2s ease-in-out; }
+
+/* OCULTACIÓN BASE Y POSICIONAMIENTO ABSOLUTO CON CAPA DE SOUBREELEVACIÓN (Z-INDEX) */
+.dropdown-cuenta .dropdown-menu-content { display: none !important; position: absolute !important; top: 100% !important; right: 0 !important; background-color: #ffffff !important; min-width: 150px !important; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15) !important; border-radius: 6px !important; z-index: 9999 !important; border: 1px solid #e2e8f0 !important; padding: 5px 0 !important; margin-top: 5px !important; }
+
+/* DISPARADOR PSEUDOCLASE (:HOVER): Modifica dinámicamente el bloque de pantalla */
+.dropdown-cuenta:hover .dropdown-menu-content { display: block !important; }
+
+/* ACCIÓN DE LOGOUT: Estilo destructivo semántico (Rojo peligro) con microinteracción visual */
+.dropdown-item-logout { color: #e74c3c !important; padding: 10px 15px !important; text-decoration: none !important; display: block !important; font-weight: bold !important; font-size: 13px !important; text-align: left !important; transition: background 0.2s; }
+.dropdown-item-logout:hover { background-color: #f8d7da !important; color: #c0392b !important; }
